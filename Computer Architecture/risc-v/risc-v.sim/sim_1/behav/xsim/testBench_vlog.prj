@@ -1,0 +1,25 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../risc-v.srcs/sources_1/ALU.v" \
+"../../../../risc-v.srcs/sources_1/BranchDecisionMaking.v" \
+"../../../../risc-v.srcs/sources_1/ControlUnit.v" \
+"../../../../risc-v.srcs/sources_1/DataExt.v" \
+"../../../../risc-v.srcs/sources_1/BRAMModule/DataRam.v" \
+"../../../../risc-v.srcs/sources_1/EXSegReg.v" \
+"../../../../risc-v.srcs/sources_1/HarzardUnit.v" \
+"../../../../risc-v.srcs/sources_1/IDSegReg.v" \
+"../../../../risc-v.srcs/sources_1/IFSegReg.v" \
+"../../../../risc-v.srcs/sources_1/ImmOperandUnit.v" \
+"../../../../risc-v.srcs/sources_1/BRAMModule/InstructionRam.v" \
+"../../../../risc-v.srcs/sources_1/MEMSegReg.v" \
+"../../../../risc-v.srcs/sources_1/NPC_Generator.v" \
+"../../../../risc-v.srcs/sources_1/RV32Core.v" \
+"../../../../risc-v.srcs/sources_1/RegisterFile.v" \
+"../../../../risc-v.srcs/sources_1/WBSegReg.v" \
+"../../../../risc-v.srcs/sim_1/testBench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

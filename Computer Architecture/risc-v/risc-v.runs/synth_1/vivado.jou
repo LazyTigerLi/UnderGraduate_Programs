@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Wed Apr  3 00:05:23 2019
+# Process ID: 1608
+# Current directory: D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/risc-v/risc-v.runs/synth_1
+# Command line: vivado.exe -log RV32Core.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source RV32Core.tcl
+# Log file: D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/risc-v/risc-v.runs/synth_1/RV32Core.vds
+# Journal file: D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/risc-v/risc-v.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source RV32Core.tcl -notrace
