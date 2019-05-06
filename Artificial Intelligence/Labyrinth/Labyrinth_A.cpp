@@ -1,11 +1,12 @@
 #include <iostream>
+#include <set>
 #include <queue>
 #include <vector>
 #include <stack>
 #include <cmath>
 #include <ctime>
-#define WIDTH 25
-#define HEIGHT 18
+#define WIDTH 60    //25
+#define HEIGHT 30   //18
 
 enum direction{left,right,up,down,none};
 
@@ -32,6 +33,7 @@ class cmp                               //优先队列的比较函数
 bool labyrinth[HEIGHT + 2][WIDTH + 2];
 std::pair<int,int> goal;
 std::priority_queue<node*,std::vector<node*>,cmp> edge;             //优先队列，用于存储边缘节点
+std::set<std::pair<std::pair<int,int>,int> > positions;
 
 int calculateH(node *nd)                    //计算启发式函数的值，这里采用的是曼哈顿距离
 {
@@ -49,6 +51,8 @@ void operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行操
         case left:
             if(labyrinth[x][y - 1] || (lastDir == right 
                 && !(labyrinth[x][y + 1] && labyrinth[x - 1][y] && labyrinth[x + 1][y])))return;
+            //if(positions.find(std::make_pair(x,y - 1)) != positions.end())return;
+            //else positions.insert(std::make_pair(x,y - 1));
             //向左是墙，或者上一步就是向右且不是死胡同
             newNode = new node;
             newNode->pos = std::make_pair(x,y - 1);
@@ -57,6 +61,8 @@ void operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行操
         case right:
             if(labyrinth[x][y + 1] || (lastDir == left 
                 && !(labyrinth[x][y - 1] && labyrinth[x + 1][y] && labyrinth[x - 1][y])))return;
+            //if(positions.find(std::make_pair(x,y + 1)) != positions.end())return;
+            //else positions.insert(std::make_pair(x,y + 1));
             newNode = new node;
             newNode->pos = std::make_pair(x,y + 1);
             newNode->dir = right;
@@ -64,6 +70,8 @@ void operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行操
         case up:
             if(labyrinth[x - 1][y] || (lastDir == down 
                 && !(labyrinth[x + 1][y] && labyrinth[x][y - 1] && labyrinth[x][y + 1])))return;
+            //if(positions.find(std::make_pair(x - 1,y)) != positions.end())return;
+            //else positions.insert(std::make_pair(x - 1,y));
             newNode = new node;
             newNode->pos = std::make_pair(x - 1,y);
             newNode->dir = up;
@@ -71,13 +79,34 @@ void operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行操
         case down:
             if(labyrinth[x + 1][y] || (lastDir == up
                 && !(labyrinth[x - 1][y] && labyrinth[x][y - 1] && labyrinth[x][y + 1])))return;
+            //if(positions.find(std::make_pair(x + 1,y)) != positions.end())return;
+            //else positions.insert(std::make_pair(x + 1,y));
             newNode = new node;
             newNode->pos = std::make_pair(x + 1,y);
             newNode->dir = down;
             break;
+        case none:
+            break;
     }
     newNode->g = nodeToExtend->g + 1;
     newNode->h = calculateH(newNode);
+    for(std::set<std::pair<std::pair<int,int>,int> >::iterator it = positions.begin(); it != positions.end(); it++)
+    {
+        if((*it).first.first == newNode->pos.first && (*it).first.second == newNode->pos.second)
+        {
+            if((*it).second <= newNode->g)     //判断条件应当是<=
+                delete newNode;
+            else
+            {
+                positions.erase(it);
+                positions.insert(std::make_pair(newNode->pos,newNode->g));
+                newNode->last = nodeToExtend;
+                edge.push(newNode);
+            }
+            return;
+        }
+    }
+    positions.insert(std::make_pair(newNode->pos,newNode->g));
     newNode->last = nodeToExtend;
     edge.push(newNode);
 }
@@ -102,10 +131,11 @@ void search()           //搜索函数
             {
                 switch(path.top())
                 {
-                    case left: std::cout<<'L';break;
-                    case right: std::cout<<'R';break;
-                    case up: std::cout<<'U';break;
-                    case down: std::cout<<'D';break;
+                case left: std::cout<<'L';break;
+                case right: std::cout<<'R';break;
+                case up: std::cout<<'U';break;
+                case down: std::cout<<'D';break;
+                case none: break;
                 }
                 path.pop();
             }
@@ -116,6 +146,7 @@ void search()           //搜索函数
         operate(right,nodeToExtend);
         operate(up,nodeToExtend);
         operate(down,nodeToExtend);
+        //delete nodeToExtend;
     }
 }
 
@@ -127,11 +158,12 @@ int main()
             if(i == 0 || i == HEIGHT + 1 || j == 0 || j == WIDTH + 1)labyrinth[i][j] = true;
             else std::cin>>labyrinth[i][j];
         }
-    goal = std::make_pair(17,25);
+    goal = std::make_pair(29,59);       //17,25
     node *startNode = new node;
-    startNode->pos = std::make_pair(2,1);
+    startNode->pos = std::make_pair(2,2);   //2,1
     startNode->g = 0;
     startNode->h = calculateH(startNode);
+    positions.insert(std::make_pair(startNode->pos,0));
     startNode->last = nullptr;
     startNode->dir = none;              //生成初始状态节点
     edge.push(startNode);
