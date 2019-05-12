@@ -6,7 +6,7 @@ TARGET2 = Labyrinth_IDA
 SRCS2 = Labyrinth_IDA.cpp
 
 
-$(TARGET1):$(SRCS1)
+$(TARGET1):$(SRCS1) $(TARGET2)
 	$(CC) $(CFLAGS) -o $(TARGET1) $(SRCS1)
 $(TARGET2):$(SRCS2)
 	$(CC) $(CFLAGS) -o $(TARGET2) $(SRCS2)
