@@ -28,7 +28,8 @@ public:
     ~Gobang();
     void alphaBetaSearch(int depth);
     void displayBoard();
-    Role placeStone(std::pair<int,int> pos, Role role);
+    bool placeStone(std::pair<int,int> pos, Role role);
+    Role isGameOver();
 
     int count;
     int evaluationOfPoints[2][15][15][4];           //存储ai和human的每个棋子在4个方向上的评分
@@ -37,6 +38,7 @@ private:
     int numOfChessman;
     Role board[15][15];
     bool top;                   //指示是否在最高的MAX节点
+    std::pair<int,int> last;    //最后一次落子
 
     int evalute();             //全局评估函数
     void evaluateOfPoint(std::pair<int,int> pos,Role role,Direction dir);    //评估某个点对于role的分值
@@ -46,7 +48,6 @@ private:
     int maxValue(int alpha,int beta,int depth);
     int minValue(int alpha,int beta,int depth);
 
-    Role isGameOver(std::pair<int,int> pos);
     void updateEvaluation(std::pair<int,int> pos);
     void removeStone(std::pair<int,int> pos);
 

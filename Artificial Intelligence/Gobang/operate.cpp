@@ -1,8 +1,8 @@
 #include "gobang.h"
 
-Role Gobang::isGameOver(std::pair<int, int> pos)
+Role Gobang::isGameOver()
 {
-    int x = pos.first,y = pos.second;
+    int x = last.first,y = last.second;
     Role role = board[x][y];
     int numOfMyChessmen = 1;
     for(int i = y - 1; i >= 0; i--)
@@ -108,13 +108,15 @@ void Gobang::updateEvaluation(std::pair<int, int> pos)
     }
 }
 
-Role Gobang::placeStone(std::pair<int, int> pos,Role role)
+bool Gobang::placeStone(std::pair<int, int> pos,Role role)
 {
     int x = pos.first,y = pos.second;
+    if(board[x][y] != empty)return false;
     board[x][y] = role;
     numOfChessman++;
     updateEvaluation(pos);
-    return isGameOver(pos);         //每次落子之后应当判断游戏是否结束
+    last = std::make_pair(x,y);
+    return true;
 }
 
 void Gobang::removeStone(std::pair<int, int> pos)

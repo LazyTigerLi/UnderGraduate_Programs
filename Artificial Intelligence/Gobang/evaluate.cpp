@@ -31,7 +31,7 @@ std::tuple<int,int,int> Gobang::analyzePoint(std::pair<int, int> pos, Role role,
                 break;
             }
         }
-        for(int i = y - 1; i >= -1; i++)    //向左扫描      这里一开始写成了i = x - 1
+        for(int i = y - 1; i >= -1; i--)    //向左扫描      这里一开始写成了i = x - 1
         {
             if(i == -1)     //  另一端是边界，相当于被堵死
             {
@@ -77,7 +77,7 @@ std::tuple<int,int,int> Gobang::analyzePoint(std::pair<int, int> pos, Role role,
                 break;
             }
         }
-        for(int i = x - 1; i >= -1; i++)    //向上扫描
+        for(int i = x - 1; i >= -1; i--)    //向上扫描      这里一开始i--误写为i++
         {
             if(i == -1)     //  另一端是边界，相当于被堵死
             {
@@ -461,17 +461,42 @@ void Gobang::evaluateOfPoint(std::pair<int, int> pos,Role role,Direction dir)
 
 int Gobang::evalute()              //计算整个棋盘对于role的评估值
 {
-    int evalutionAi = 0,evalutionHum = 0;
+    int evaluationAi = 0,evaluationHum = 0;
     for(int i = 0; i < 15; i++)
         for(int j = 0; j < 15; j++)
         {
             evaluateOfPoint(std::make_pair(i,j),ai,all);
             evaluateOfPoint(std::make_pair(i,j),hum,all);
+            int evaluationPointAi = 0,evaluationPointHum = 0;
             for(int k = 0; k < 4; k++)
             {
-                evalutionAi += evaluationOfPoints[ai][i][j][k];
-                evalutionHum += evaluationOfPoints[hum][i][j][k];
+                evaluationPointAi += evaluationOfPoints[ai][i][j][k];
+                evaluationPointHum += evaluationOfPoints[hum][i][j][k];
             }
+            if(evaluationPointAi >= 2 * three && evaluationPointAi < four)
+            {
+                if(board[i][j] == empty)evaluationPointAi = four / 2;        //两个活三（冲四）相当于一个活四
+                else evaluationPointAi = four;
+            }
+            if(evaluationPointAi >= 2 * two && evaluationPointAi < three)
+            {
+                if(board[i][j] == empty)evaluationPointAi = three / 2;        //两个活二（冲三）相当于一个活三
+                else evaluationPointAi = three / 2;
+            }
+            if(evaluationPointHum >= 2 * three && evaluationPointHum < four)
+            {
+                if(board[i][j] == empty)evaluationPointHum= four / 2;        //两个活三（冲四）相当于一个活四
+                else evaluationPointHum = four;
+            }
+            if(evaluationPointHum >= 2 * two && evaluationPointHum < three)
+            {
+                if(board[i][j] == empty)evaluationPointHum = four / 2;        //两个活三（冲四）相当于一个活四
+                else evaluationPointHum = four;
+            }
+            //但这里有别于对可能的下一步进行排序，因为对于这些着法，只要堵住那个落点，两个活三（或其他）都会被破坏，比真正的活四价值要低
+            evaluationAi += evaluationPointAi;
+            evaluationHum += evaluationPointHum;
         }
-    return evalutionAi - evalutionHum;
+    //if(evalutionHum >= five)return five;
+    return evaluationAi - evaluationHum;
 }

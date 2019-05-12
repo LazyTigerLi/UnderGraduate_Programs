@@ -78,6 +78,13 @@ std::queue<std::pair<int, int> > Gobang::nextSteps(Role role)  //根据当前状
                     evaluationAi += evaluationOfPoints[ai][i][j][k];
                     evaluationHum += evaluationOfPoints[hum][i][j][k];
                 }
+
+                //提升下面这些着法的优先级
+                if(evaluationAi >= 2 * three && evaluationAi < four)evaluationAi = four;        //两个活三（冲四）相当于一个活四
+                if(evaluationAi >= 2 * two && evaluationAi < three)evaluationAi = three;        //两个活二（冲三）相当于一个活三
+                if(evaluationHum >= 2 * three && evaluationHum < four)evaluationHum = four;
+                if(evaluationHum >= 2 * two && evaluationHum < three)evaluationHum = three;
+
                 if(evaluationAi < three && evaluationHum < three)orderedSteps.push(std::make_tuple(i,j,this));
                 if(evaluationAi >= five)fiveAi.insert(std::make_pair(i,j));
                 else if(evaluationAi >= four)fourAi.insert(std::make_pair(i,j));
