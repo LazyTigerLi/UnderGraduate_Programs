@@ -1,34 +1,72 @@
+#include "Labyrinth_IDA.h"
 #include <iostream>
-#include <set>
-#include <queue>
-#include <vector>
-#include <stack>
-#include <cmath>
-#include <ctime>
+#include <fstream>
+#include <sstream>
+#include <string>
+
 #define WIDTH 60   //25
 #define HEIGHT 30   //18
 
-enum direction{left,right,up,down,none};
-
-struct node             //搜索树节点
+Labyrinth::Labyrinth()
 {
-    std::pair<int,int> pos;
-    int g;
-    int h;
-    direction dir;
-};
+    std::cout<<"Please input the width and the height of the labyrinth:";
+    std::cin>> width>> height;
+    labyrinth = new int *[height + 2];
+    for(int i = 0; i < height + 2; i++)
+        labyrinth[i] = new int[width + 2];
 
-bool labyrinth[HEIGHT + 2][WIDTH + 2];
-std::pair<int,int> goal;
-std::set<std::pair<std::pair<int,int>,int> > positions;
-std::stack<direction> path;
+    std::cout<<"Please input the file name:";
+    std::string filename;
+    std::cin>>filename;
+    std::ifstream infile(filename);
 
-int calculateH(node *nd)                    //计算启发式函数的值，这里采用的是曼哈顿距离
+    if(infile.fail()){std::cout<<"fail";return;}
+
+    int i = 1;
+    std::string line;
+    while (std::getline(infile,line))
+    {
+        int j = 1;
+        std::stringstream ss;
+        ss<<line;
+        if(!ss.eof())
+        {
+            while(ss>>labyrinth[i][j])j++;
+        }
+        i++;
+    }
+    infile.close();
+    for(int i = 0; i <= height + 1; i++)
+    {
+        labyrinth[i][0] = 1;
+        labyrinth[i][width + 1] = 1;
+    }
+    for(int j = 0; j <= width + 1; j++)
+    {
+        labyrinth[0][j] = 1;
+        labyrinth[height + 1][j] = 1;
+    }
+
+    std::cout<<"Please input the start and the end point:";
+    int startX,startY,endX,endY;
+    std::cin>>startX>>startY>>endX>>endY;                   //以上为数据读取
+    goal = std::make_pair(endX + 1,endY + 1);
+
+    startNode = new node;
+    startNode->pos = std::make_pair(startX + 1,startY + 1);
+    startNode->g = 0;
+    startNode->h = calculateH(startNode);
+    positions.insert(std::make_pair(startNode->pos,0));
+    startNode->dir = none;              //生成初始状态节点
+}
+
+
+int Labyrinth::calculateH(node *nd)                    //计算启发式函数的值，这里采用的是曼哈顿距离
 {
     return abs(nd->pos.first - goal.first) + abs(nd->pos.second - goal.second);
 }
 
-node* operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行操作，向dir方向移动
+node* Labyrinth::operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行操作，向dir方向移动
 {
     int x = nodeToExtend->pos.first;
     int y = nodeToExtend->pos.second;
@@ -91,7 +129,7 @@ node* operate(direction dir,node *nodeToExtend)  //对待扩展的节点进行�
     return newNode;
 }
 
-bool search(int threshold,node *currState)           //搜索函数，threshold为阈值
+bool Labyrinth::dfs(int threshold,node *currState)           //搜索函数，threshold为阈值
 {
     if(currState->g + currState->h > threshold)return false;        //当前节点的f值超过阈值
 
@@ -104,7 +142,7 @@ bool search(int threshold,node *currState)           //搜索函数，threshold�
         nextState[i] = operate(dir[i],currState);
         if(nextState[i])
         {
-            if(search(threshold,nextState[i]))
+            if(dfs(threshold,nextState[i]))
             {
                 path.push(nextState[i]->dir);
                 return true;
@@ -115,44 +153,51 @@ bool search(int threshold,node *currState)           //搜索函数，threshold�
     return false;
 }
 
-int main()
+void Labyrinth::search()
 {
-    for(int i = 0; i <= HEIGHT + 1; i++)
-        for(int j = 0; j <= WIDTH + 1; j++)
-        {
-            if(i == 0 || i == HEIGHT + 1 || j == 0 || j == WIDTH + 1)labyrinth[i][j] = true;
-            else std::cin>>labyrinth[i][j];
-        }
-    goal = std::make_pair(29,59);       //17,25     29,59
-    node *startNode = new node;
-    startNode->pos = std::make_pair(2,2);   //2,1       2,2
-    startNode->g = 0;
-    startNode->h = calculateH(startNode);
-    startNode->dir = none;              //生成初始状态节点
-    positions.insert(std::make_pair(startNode->pos,0));
-    time_t t1 = time(0);
+    gettimeofday(&start,nullptr);
     int threshold = startNode->h;
-    while(!search(threshold,startNode))
+    while(true)
     {
+        if(dfs(threshold,startNode))
+        {
+            gettimeofday(&end,nullptr);
+            return;
+        }
         threshold += 2;
         positions.clear();
         positions.insert(std::make_pair(startNode->pos,0));
     }
-    std::cout<<std::endl<<path.size()<<std::endl;
+}
+
+void Labyrinth::output()
+{
+    std::ofstream outfile("output.txt");
+    outfile<<end.tv_sec - start.tv_sec + (double)(end.tv_usec - start.tv_usec) / 1000000;
+    outfile<<std::endl;
+    int size = path.size();
     while(!path.empty())
     {
         switch(path.top())
         {
-        case left: std::cout<<'L';break;
-        case right: std::cout<<'R';break;
-        case up: std::cout<<'U';break;
-        case down: std::cout<<'D';break;
+        case left: outfile<<'L';break;
+        case right: outfile<<'R';break;
+        case up: outfile<<'U';break;
+        case down: outfile<<'D';break;
         case none: break;
         }
         path.pop();
     }
-    std::cout<<std::endl;
-    time_t t2 = time(0);
-    std::cout<<t2 - t1<<std::endl;
+    outfile<<std::endl;
+    outfile<<size;
+    outfile.close();
+}
+
+
+int main()
+{
+    Labyrinth *puzzle = new Labyrinth;
+    puzzle->search();
+    puzzle->output();
     return 0;
 }
