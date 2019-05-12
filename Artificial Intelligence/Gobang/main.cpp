@@ -20,7 +20,7 @@ int main()
         std::cin>>x>>y;
         if(!gobang->placeStone(std::make_pair(x - 1,y - 1),hum))continue;
         gobang->displayBoard();
-        outfile<<'['<<x - 1<<','<<y - 1<<']'<<std::endl;
+        outfile<<'['<<x<<','<<y<<']'<<std::endl;
         if(gobang->isGameOver() == hum)
         {
             std::cout<<"Hum wins!\n";
@@ -34,8 +34,8 @@ int main()
         outfile<<'['<<gobang->nextStepOfAi.first + 1<<','<<gobang->nextStepOfAi.second + 1<<"]\t";
         if(gobang->isGameOver() == ai)
         {
-            std::cout<<"\nAi wins!\n";
-            outfile<<"Ai wins!\n";
+            std::cout<<"Ai wins!\n";
+            outfile<<"\nAi wins!\n";
             break;
         }
     }while(true);
