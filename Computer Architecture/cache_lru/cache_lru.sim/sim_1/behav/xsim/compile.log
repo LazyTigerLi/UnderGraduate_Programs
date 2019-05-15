@@ -6,5 +6,3 @@ INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/Documents/Programs/UnderGr
 INFO: [VRFC 10-311] analyzing module mem
 INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_lru/cache_lru.srcs/sim_1/cache_tb.sv" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module cache_tb
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_lru/cache_lru.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glbl
