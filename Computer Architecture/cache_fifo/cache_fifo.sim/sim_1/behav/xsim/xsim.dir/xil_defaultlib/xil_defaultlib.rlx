@@ -1,9 +1,0 @@
-0.6
-2017.4
-Dec 15 2017
-21:07:18
-D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.sim/sim_1/behav/xsim/glbl.v,1513215259,verilog,,,,glbl,,xil_defaultlib,,,,,,
-D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sim_1/cache_tb.sv,1557858679,systemVerilog,,,,cache_tb,,xil_defaultlib,C:/Xilinx/Vivado/2017.4/data/xilinx_vip/include,,,,,
-D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sources_1/cache.sv,1557858187,systemVerilog,,D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sources_1/main_mem.sv,,cache,,xil_defaultlib,C:/Xilinx/Vivado/2017.4/data/xilinx_vip/include,,,,,
-D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sources_1/main_mem.sv,1557107491,systemVerilog,,D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sources_1/mem.sv,,main_mem,,xil_defaultlib,C:/Xilinx/Vivado/2017.4/data/xilinx_vip/include,,,,,
-D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sources_1/mem.sv,1557107491,systemVerilog,,D:/Documents/Programs/UnderGraduate_Programs/Computer Architecture/cache_fifo/cache_fifo.srcs/sim_1/cache_tb.sv,,mem,,xil_defaultlib,C:/Xilinx/Vivado/2017.4/data/xilinx_vip/include,,,,,
