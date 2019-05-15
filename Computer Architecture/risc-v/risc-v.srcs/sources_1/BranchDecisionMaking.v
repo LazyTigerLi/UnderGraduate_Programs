@@ -31,8 +31,8 @@ module BranchDecisionMaking(
     end
 endmodule
 
-//功能和接口说�?
-    //BranchDecisionMaking接受两个操作数，根据BranchTypeE的不同，进行不同的判断，当分支应该taken时，令BranchE=1'b1
+//功能和接口�?��??
+    //BranchDecisionMaking接受两个操作数，根据BranchTypeE的不同，进�?�不同的判断，当分支应�??taken时，�?BranchE=1'b1
     //BranchTypeE的类型定义在Parameters.v�?
 //推荐格式�?
     //case()
