@@ -9,6 +9,7 @@
 // Tool Versions: Vivado 2017.4.1
 // Description: IF-ID Segment Register
 //////////////////////////////////////////////////////////////////////////////////
+`define BHT
 module IDSegReg(
     input wire clk,
     input wire clear,
@@ -27,6 +28,10 @@ module IDSegReg(
     
     input wire foundF,
     output reg foundD,
+    `ifdef BHT
+    input wire takenF,
+    output reg takenD,
+    `endif
     input wire [31:0] npc_predictedF,
     output reg [31:0] npc_predictedD
     );
@@ -60,6 +65,9 @@ module IDSegReg(
         RD_old<=RD_raw;
         foundD <= foundF;
         npc_predictedD <= npc_predictedF;
+        `ifdef BHT
+        takenD <= takenF;
+        `endif
     end    
     assign RD = stall_ff ? RD_old : (clear_ff ? 32'b0 : RD_raw );
 

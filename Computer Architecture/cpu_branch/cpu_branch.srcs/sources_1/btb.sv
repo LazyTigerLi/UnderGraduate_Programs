@@ -18,7 +18,7 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+`define BHT
 
 module btb #(
     parameter LOW_ADDR_LEN = 5,    //低位地址长度，低位地址用于在cache内寻址，也决定了cache的大小
@@ -31,6 +31,7 @@ module btb #(
     output reg [31:0] npc,
     //更新btb缓存的目标地址，也可能是删除项目
     input wire new_item,
+    input wire [31:0] pc_update,
     input wire [31:0] npc_update,
     input wire valid_update             //指示是将某个项目失效，还是写入新的项目
 );
@@ -46,9 +47,6 @@ reg [LOW_ADDR_LEN - 1:0] low_addr;
 reg [1:0] word_addr;
 reg [UNUSED_ADDR_LEN - 1:0] unused_addr;
 assign {unused_addr,tag,low_addr,word_addr} = pc;
-
-reg [31:0] pc_update;
-reg [31:0] last_pc;
 
 always @ (pc)
 begin
@@ -68,8 +66,6 @@ begin
             pc_tag[i] = 0;
             pc_target[i] = 32'b0;
             valid[i] = 1'b0;
-            pc_update = 32'b0;
-            last_pc = 32'b0;
         end
     end
     else begin
@@ -78,12 +74,13 @@ begin
             pc_tag[pc_update[1 + LOW_ADDR_LEN:2]] = pc_update[1 + LOW_ADDR_LEN + TAG_LEN:2 + LOW_ADDR_LEN];
             pc_target[pc_update[1 + LOW_ADDR_LEN:2]] = npc_update;
             valid[pc_update[1 + LOW_ADDR_LEN:2]] = 1'b1;
-        end else if(!valid_update)
+        end
+        `ifndef BHT 
+        else if(!valid_update)
         begin
             valid[pc_update[1 + LOW_ADDR_LEN:2]] = 1'b0;
         end
-        pc_update = last_pc;
-        last_pc = pc;
+        `endif
     end
 end
 

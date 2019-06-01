@@ -9,6 +9,7 @@
 // Tool Versions: Vivado 2017.4.1
 // Description: ID-EX Segment Register
 //////////////////////////////////////////////////////////////////////////////////
+`define BHT
 module EXSegReg(
     input wire clk,
     input wire en,
@@ -54,6 +55,10 @@ module EXSegReg(
    
     input wire foundD,
     output reg foundE,
+    `ifdef BHT
+    input wire takenD,
+    output reg takenE,
+    `endif
     input wire [31:0] npc_predictedD,
     output reg [31:0] npc_predictedE
     );
@@ -78,6 +83,9 @@ module EXSegReg(
         AluSrc2E   = 2'b0; 
         foundE = 1'b0;
         npc_predictedE = 32'b0;
+        `ifdef BHT
+        takenE = 1'b0;
+        `endif
     end
     //
     always@(posedge clk) begin
@@ -103,7 +111,10 @@ module EXSegReg(
                 AluSrc1E<=1'b0; 
                 AluSrc2E<=2'b0;  
                 foundE <= 1'b0; 
-                npc_predictedE <= 32'b0;  
+                npc_predictedE <= 32'b0; 
+                `ifdef BHT
+                takenE <= 1'b0;
+                `endif 
             end else begin
                 PCE<=PCD; 
                 BrNPC<=JalNPC; 
@@ -124,7 +135,10 @@ module EXSegReg(
                 AluSrc1E<=AluSrc1D;
                 AluSrc2E<=AluSrc2D;  
                 foundE <= foundD;   
-                npc_predictedE <= npc_predictedD;    
+                npc_predictedE <= npc_predictedD; 
+                `ifdef BHT
+                takenE <= takenD;
+                `endif    
             end
         end
     

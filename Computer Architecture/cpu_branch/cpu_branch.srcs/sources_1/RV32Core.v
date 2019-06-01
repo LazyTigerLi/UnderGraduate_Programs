@@ -9,6 +9,8 @@
 // Tool Versions: Vivado 2017.4.1
 // Description: Top level of our CPU Core
 //////////////////////////////////////////////////////////////////////////////////
+`define BHT
+
 module RV32Core(
     input wire CPU_CLK,
     input wire CPU_RST,
@@ -90,7 +92,7 @@ module RV32Core(
     wire [31:0] npc_predictedD;
     wire [31:0] npc_predictedE;
     wire mispredicted;
-    assign mispredicted = foundE & (~BranchE | ~(BrNPC == npc_predictedE));
+  
     //wire values assignments
     assign {Funct7D, Rs2D, Rs1D, Funct3D, RdD, OpCodeD} = Instr;
     assign JalNPC=ImmD+PCD;
@@ -100,11 +102,21 @@ module RV32Core(
     assign Operand2 = AluSrc2E[1]?(ImmE):( AluSrc2E[0]?Rs2E:ForwardData2 );
     assign ResultM = LoadNpcM ? (PCM+4) : AluOutM;
     assign RegWriteData = ~MemToRegW?ResultW:DM_RD_Ext;
-
+    
+    `ifdef BHT
+    wire isBranch;
+    wire takenF;        //BHTÔ¤²âÊÇ·ñÌø×ª
+    wire takenD;
+    wire takenE;
+    assign isBranch = (BranchTypeE != `NOBRANCH);
+    assign mispredicted = foundE & (~BranchE | ~(BrNPC == npc_predictedE) | (BranchE & ~takenE));
+    `else
+    assign mispredicted = foundE & (~BranchE | ~(BrNPC == npc_predictedE));
+    `endif
     //Module connections
     // ---------------------------------------------
     // PC-IF
-    // ---------------------------------------------
+    // -------------------------------------tan--------
     NPC_Generator NPC_Generator1(
         .PCF(PCF),
         .JalrTarget(AluOutE), 
@@ -118,6 +130,9 @@ module RV32Core(
         .npc_predicted(npc_predictedF),
         .PCE(PCE),
         .mispredicted(mispredicted),
+        `ifdef BHT
+        .takenF(takenF),
+        `endif
         .foundE(foundE)
     );
 
@@ -135,11 +150,23 @@ module RV32Core(
         .pc(PCF),
         .npc(npc_predictedF),
         .found(foundF),
+        .pc_update(PCE),
         .npc_update(BrNPC),
         .valid_update(~mispredicted),
         .new_item(~foundE & BranchE)
     );
-
+    
+    `ifdef BHT
+    bht bht1(
+        .clk(CPU_CLK),
+        .rst(CPU_RST),
+        .pc(PCF),
+        .isBranch(isBranch),
+        .pc_update(PCE),
+        .takenE(BranchE),
+        .takenF(takenF)
+    );
+    `endif
     // ---------------------------------------------
     // ID stage
     // ---------------------------------------------
@@ -157,6 +184,10 @@ module RV32Core(
         .PCD(PCD),
         .foundF(foundF),
         .foundD(foundD),
+        `ifdef BHT
+        .takenF(takenF),
+        .takenD(takenD),
+        `endif
         .npc_predictedF(npc_predictedF),
         .npc_predictedD(npc_predictedD) 
     );
@@ -242,6 +273,10 @@ module RV32Core(
         .AluSrc2E(AluSrc2E),
         .foundD(foundD),
         .foundE(foundE),
+        `ifdef BHT
+        .takenD(takenD),
+        .takenE(takenE),
+        `endif
         .npc_predictedD(npc_predictedD),
         .npc_predictedE(npc_predictedE) 
     	); 
