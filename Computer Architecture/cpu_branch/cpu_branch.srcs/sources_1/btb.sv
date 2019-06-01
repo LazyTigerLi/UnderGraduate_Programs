@@ -48,6 +48,11 @@ reg [1:0] word_addr;
 reg [UNUSED_ADDR_LEN - 1:0] unused_addr;
 assign {unused_addr,tag,low_addr,word_addr} = pc;
 
+`ifndef BHT
+integer incorrect;
+integer numOfBranch;
+`endif
+
 always @ (pc)
 begin
     if(pc_tag[low_addr] == tag && valid[low_addr] == 1'b1)
@@ -67,6 +72,10 @@ begin
             pc_target[i] = 32'b0;
             valid[i] = 1'b0;
         end
+        `ifndef BHT
+        incorrect = 0;
+        numOfBranch = 0;
+        `endif
     end
     else begin
         if(new_item)
@@ -79,7 +88,14 @@ begin
         else if(!valid_update)
         begin
             valid[pc_update[1 + LOW_ADDR_LEN:2]] = 1'b0;
+            `ifndef BHT
+            incorrect++;
+            `endif
         end
+        `endif
+        
+        `ifndef BHT
+        if(found)numOfBranch++;
         `endif
     end
 end

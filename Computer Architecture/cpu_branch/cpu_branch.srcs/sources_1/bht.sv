@@ -36,6 +36,8 @@ localparam UNUSED_ADDR_LEN = 30 - LOW_ADDR_LEN;
 
 
 reg [1 : 0] status [PC_CNT];
+integer correct;
+integer incorrect;
 
 reg [LOW_ADDR_LEN - 1:0] low_addr;
 reg [LOW_ADDR_LEN - 1:0] index_update;
@@ -56,19 +58,21 @@ begin
         begin
             status[i] = 2'b00;
         end
+        correct = 0;
+        incorrect = 0;
     end
     else begin
         if(isBranch)
         begin
             case(status[index_update])
-                2'b00:begin if(takenE)status[index_update] = 2'b01;
-                            else status[index_update] = 2'b00; end
-                2'b01:begin if(takenE)status[index_update] = 2'b11;
-                            else status[index_update] = 2'b00; end
-                2'b10:begin if(takenE)status[index_update] = 2'b11;
-                            else status[index_update] = 2'b00; end
-                2'b11:begin if(takenE)status[index_update] = 2'b11;
-                            else status[index_update] = 2'b10; end
+                2'b00:begin if(takenE)begin status[index_update] = 2'b01; incorrect++; end
+                            else begin status[index_update] = 2'b00; correct++;end end
+                2'b01:begin if(takenE)begin status[index_update] = 2'b11; incorrect++; end
+                            else begin status[index_update] = 2'b00; correct++; end end
+                2'b10:begin if(takenE)begin status[index_update] = 2'b11; correct++; end
+                            else begin status[index_update] = 2'b00; incorrect++; end end
+                2'b11:begin if(takenE)begin status[index_update] = 2'b11; correct++; end
+                            else begin status[index_update] = 2'b10; incorrect++; end end
             endcase
         end
     end

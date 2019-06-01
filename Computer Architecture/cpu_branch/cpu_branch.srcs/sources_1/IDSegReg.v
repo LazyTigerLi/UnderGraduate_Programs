@@ -63,11 +63,21 @@ module IDSegReg(
         stall_ff<=~en;
         clear_ff<=clear;
         RD_old<=RD_raw;
-        foundD <= foundF;
-        npc_predictedD <= npc_predictedF;
-        `ifdef BHT
-        takenD <= takenF;
-        `endif
+        if(en)
+            if(clear)
+            begin
+                foundD <= 1'b0;
+                npc_predictedD <= 32'b0;
+                `ifdef BHT
+                takenD <= 1'b0;
+                `endif
+            end else begin
+                foundD <= foundF;
+                npc_predictedD <= npc_predictedF;
+                `ifdef BHT
+                takenD <= takenF;
+                `endif
+            end                             //一开始忘记处理当需要清空流水线时，新添加的信号需要清零，导致错误的信息传递
     end    
     assign RD = stall_ff ? RD_old : (clear_ff ? 32'b0 : RD_raw );
 
