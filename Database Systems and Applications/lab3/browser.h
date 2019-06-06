@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QtSql/QSqlDatabase>
 #include <QTabWidget>
+#include <QSqlRelation>
 #include <table.h>
+#include <statistics.h>
 
 class Browser: public QWidget
 {
@@ -23,8 +25,9 @@ private:
     Table *client;
     Table *account;
     Table *loan;
-    //QWidget *loan;
-    //QWidget *statistics;
+    Statistics *stat;
+
+    void setForeignKey();
 };
 
 

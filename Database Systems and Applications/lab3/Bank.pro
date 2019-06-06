@@ -28,11 +28,13 @@ SOURCES += \
         browser.cpp \
         logindialog.cpp \
         main.cpp \
+        statistics.cpp \
         table.cpp
 
 HEADERS += \
         browser.h \
         logindialog.h \
+        statistics.h \
         table.h
 
 # Default rules for deployment.

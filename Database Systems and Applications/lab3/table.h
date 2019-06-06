@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QSqlRelationalTableModel>
-#include <QSqlRelationalDelegate>
+//#include <QSqlRelationalDelegate>
 #include <QSqlError>
 #include <QTableView>
 #include <QPushButton>
@@ -19,20 +19,24 @@ public:
     ~Table();
     QVector<QSqlRelationalTableModel*> model;
     QVector<QTableView*> tableView;
+    QHBoxLayout *mainLayout;
+    QVector<QVBoxLayout*> tableLayout;
 
 private:
+    QVector<QString> table;
     QVector<QPushButton*> insertRowButton;
     QVector<QPushButton*> deleteRowButton;
     QVector<QPushButton*> submitAllButton;
+    QVector<QPushButton*> refreshButton;
 
-    QVector<QVBoxLayout*> tableLayout;
     QVector<QHBoxLayout*> buttonLayout;
-    QHBoxLayout *mainLayout;
+
 
 private slots:
     void insertRow();
     void deleteRow();
     void submitAll();
+    void refresh();
 };
 
 #endif // TABLE_H
