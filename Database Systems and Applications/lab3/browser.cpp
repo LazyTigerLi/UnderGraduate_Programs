@@ -17,11 +17,11 @@ Browser::~Browser()
 void Browser::generateWidgets()
 {
     browser = new QTabWidget(this);
-    bank = new Table(QVector<QString>{"Bank"});
-    staff = new Table(QVector<QString>{"Staff"});
-    client = new Table(QVector<QString>{"Client"});
-    account = new Table(QVector<QString>{"Account","Client_has_Account"});
-    loan = new Table(QVector<QString>{"Loan","LoanDistribution","Client_has_Loan"});
+    bank = new Bank(db,QVector<QString>{"Bank"});
+    staff = new Staff(db,QVector<QString>{"Staff"});
+    client = new Client(db,QVector<QString>{"Client"});
+    account = new Account(db,QVector<QString>{"Account","Client_has_Account"});
+    loan = new Loan(db,QVector<QString>{"Loan","LoanDistribution","Client_has_Loan"});
     stat = new Statistics(db,this);
     //setForeignKey();
     account->mainLayout->setStretchFactor(account->tableLayout[0],3);
@@ -44,7 +44,7 @@ void Browser::generateWidgets()
     setLayout(mainLayout);
 }
 
-void Browser::setForeignKey()
+/*void Browser::setForeignKey()
 {
     account->model[0]->setRelation(5,QSqlRelation("Bank","Name","Name"));
     account->model[0]->setRelation(1,QSqlRelation("Client","ID","ID"));
@@ -60,4 +60,4 @@ void Browser::setForeignKey()
     loan->model[2]->setRelation(0,QSqlRelation("Client","ID","ID"));
     loan->model[1]->setRelation(2,QSqlRelation("Loan","Loan ID","Loan ID"));
 
-}
+}*/

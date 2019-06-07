@@ -25,15 +25,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        account.cpp \
+        bank.cpp \
         browser.cpp \
+        client.cpp \
+        loan.cpp \
         logindialog.cpp \
         main.cpp \
+        staff.cpp \
         statistics.cpp \
         table.cpp
 
 HEADERS += \
+        account.h \
+        bank.h \
         browser.h \
+        client.h \
+        loan.h \
         logindialog.h \
+        staff.h \
         statistics.h \
         table.h
 

@@ -5,7 +5,11 @@
 #include <QtSql/QSqlDatabase>
 #include <QTabWidget>
 #include <QSqlRelation>
-#include <table.h>
+#include "bank.h"
+#include "account.h"
+#include "client.h"
+#include "staff.h"
+#include "loan.h"
 #include <statistics.h>
 
 class Browser: public QWidget
@@ -20,14 +24,14 @@ public:
 
 private:
     QTabWidget *browser;
-    Table *bank;
-    Table *staff;
-    Table *client;
-    Table *account;
-    Table *loan;
+    Bank *bank;
+    Staff *staff;
+    Client *client;
+    Account *account;
+    Loan *loan;
     Statistics *stat;
 
-    void setForeignKey();
+    //void setForeignKey();
 };
 
 

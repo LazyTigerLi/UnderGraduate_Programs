@@ -1,9 +1,10 @@
 #include "table.h"
 #include <QMessageBox>
 
-Table::Table(QVector<QString> tableName, QWidget *parent)
+Table::Table(QSqlDatabase database, QVector<QString> tableName, QWidget *parent)
     :QWidget(parent)
 {
+    db = database;
     mainLayout = new QHBoxLayout;
     for(int i = 0; i < tableName.size(); i++)
     {
@@ -47,7 +48,7 @@ Table::Table(QVector<QString> tableName, QWidget *parent)
 
         mainLayout->addLayout(tblLayout);
     }
-    setLayout(mainLayout);
+    //setLayout(mainLayout);
 }
 
 Table::~Table()

@@ -16,12 +16,15 @@ class Table : public QWidget
 {
     Q_OBJECT
 public:
-    Table(QVector<QString> tableName,QWidget *parent = nullptr);
+    Table(QSqlDatabase database,QVector<QString> tableName,QWidget *parent = nullptr);
     ~Table();
     QVector<QSqlRelationalTableModel*> model;
     QVector<QTableView*> tableView;
     QHBoxLayout *mainLayout;
     QVector<QVBoxLayout*> tableLayout;
+
+protected:
+    QSqlDatabase db;
 
 private:
     QVector<QString> table;
