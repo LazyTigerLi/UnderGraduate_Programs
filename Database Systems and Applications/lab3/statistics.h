@@ -10,8 +10,15 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QRadioButton>
+#include <QPushButton>
 #include <QButtonGroup>
 #include <QSqlQueryModel>
+#include <QChart>
+#include <QChartView>
+#include <QLineSeries>
+
+
+using namespace QT_CHARTS_NAMESPACE;
 
 class Statistics : public QWidget
 {
@@ -30,11 +37,22 @@ private:
 
     QHBoxLayout *buttonLayout;
     QVBoxLayout *tableLayout;
+    QHBoxLayout *buttonLayout2;
+    QVBoxLayout *chartLayout;
 
     QButtonGroup *time;
+    QButtonGroup *type;
     QRadioButton *year;
     QRadioButton *month;
     QRadioButton *season;
+    QRadioButton *money;
+    QRadioButton *client;
+    QPushButton *refresh;
+
+    QChart *savingChart;
+    QChart *loanChart;
+    QChartView *savingChartView;
+    QChartView *loanChartView;
 
     QString yearSaving;
     QString yearLoan;
