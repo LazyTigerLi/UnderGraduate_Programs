@@ -30,14 +30,17 @@ protected:
     QAction *uploadAction;
     QAction *updateAction;
     QAction *loginAction;
+    QAction *signUpAction;
 
     QVBoxLayout *mainLayout;
 
-protected:
+public:
     Client *client;
 
 private slots:
     void login();
+    void signUp();
+    virtual void analyzeReply() = 0;
 };
 
 #endif // APPPAGE

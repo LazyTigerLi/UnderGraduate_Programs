@@ -106,6 +106,9 @@ void AppHomePage::newAppInfoPage(QListWidgetItem *itemClicked)
     for(i = 0; i < item.size(); i++)
         if(item[i] == itemClicked)break;
     this->hide();
+    disconnect(sock,SIGNAL(readyRead()),this,SLOT(analyzeReply()));
+    //一定要断开连接，因为主界面并不会删除，当有新的数据到达时，会使得该对象中的槽也进行响应
+
     AppInfoPage *infoPage = new AppInfoPage(client,this,sock,appID[i],appName[i]);
     infoPage->show();
 }

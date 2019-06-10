@@ -31,6 +31,7 @@ private:
     void listApp();
     void listApp(QString appName);
     void getAppInfo(int appID);
+    void login(QString userName,QString password);
 
 private slots:
     void clientDisconnectedSlot();

@@ -47,6 +47,7 @@ AppInfoPage::~AppInfoPage()
 void AppInfoPage::backToHomePage()
 {
     homePage->show();
+    connect(sock,SIGNAL(readyRead()),homePage,SLOT(analyzeReply()));
     this->close();
 }
 

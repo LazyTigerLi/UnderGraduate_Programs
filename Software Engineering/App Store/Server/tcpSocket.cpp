@@ -38,6 +38,14 @@ void TcpSocket::analyzeRequest()
         int appID = std::stoi(byteArray.mid(8).toStdString());
         getAppInfo(appID);
     }
+    else if(QString::fromStdString(byteArray.mid(0,8).toStdString()) == "login   ")
+    {
+        int userNameSize = std::stoi(byteArray.mid(8,1).toStdString(),0,16);
+        QString userName = QString::fromStdString(byteArray.mid(9,userNameSize).toStdString());
+        int passwordSize = std::stoi(byteArray.mid(9 + userNameSize,1).toStdString(),0,16);
+        QString password = QString::fromStdString(byteArray.mid(10 + userNameSize,passwordSize).toStdString());
+        login(userName,password);
+    }
 }
 
 void TcpSocket::listApp()
@@ -132,6 +140,54 @@ void TcpSocket::getAppInfo(int appID)
         //qDebug("%s",introData.toStdString().data());
         dataToSend.append(introSizeData);      //4B
         dataToSend.append(introData);
+    }
+    write(dataToSend);
+}
+
+void TcpSocket::login(QString userName, QString password)
+{
+    QByteArray dataToSend;
+    QByteArray success;
+    QByteArray errorMsg;
+    QByteArray errorMsgSize;
+    dataToSend.append("login   ");
+    QSqlQuery query;
+    query.exec("select `Client`.`Password`,`Client`.`Is Online` from `app store`.`Client` where "
+               "`Client`.`ID` = '" + userName + "'");
+    if(!query.next())
+    {
+        success = QByteArray(1,'0');
+        QString error = "The user does not exist!";
+        errorMsg = error.toUtf8();
+        errorMsgSize = QString::number(errorMsg.size(),16).toUtf8();
+        dataToSend.append(success);
+        dataToSend.append(errorMsgSize);
+        dataToSend.append(errorMsg);
+    }
+    else if(query.value(1).toInt() == 1)
+    {
+        success = QByteArray(1,'0');
+        QString error = "The user has logined!";
+        errorMsg = error.toUtf8();
+        errorMsgSize = QString::number(errorMsg.size(),16).toUtf8();
+        dataToSend.append(success);
+        dataToSend.append(errorMsgSize);
+        dataToSend.append(errorMsg);
+    }
+    else if(query.value(0).toString() != password)
+    {
+        success = QByteArray(1,'0');
+        QString error = "The password is wrong!";
+        errorMsg = error.toUtf8();
+        errorMsgSize = QString::number(errorMsg.size(),16).toUtf8();
+        dataToSend.append(success);
+        dataToSend.append(errorMsgSize);
+        dataToSend.append(errorMsg);
+    }
+    else
+    {
+        success = QByteArray(1,'1');
+        dataToSend.append(success);
     }
     write(dataToSend);
 }

@@ -1,4 +1,6 @@
 #include "appPage.h"
+#include "client.h"
+#include "logindialog.h"
 #include <QHBoxLayout>
 
 AppPage::AppPage(Client *c, QWidget *parent)
@@ -16,32 +18,43 @@ AppPage::AppPage(Client *c, QWidget *parent)
     uploadAction = new QAction(tr("上传"));
     updateAction = new QAction(tr("更新"));
     loginAction = new QAction(tr("登录"));
+    signUpAction = new QAction(tr("注册"));
 
     optionsButton->setMenu(options);
     userButton->setMenu(user);
     options->addAction(uploadAction);
     options->addAction(updateAction);
     user->addAction(loginAction);
+    user->addAction(signUpAction);
 
     QHBoxLayout *upperLayout = new QHBoxLayout;
     mainLayout = new QVBoxLayout;
     upperLayout->addWidget(backButton);
     upperLayout->addWidget(searchBar);
     upperLayout->addWidget(searchButton);
-    upperLayout->addWidget(optionsButton);
     upperLayout->addWidget(userButton);
+    upperLayout->addWidget(optionsButton);
     mainLayout->addLayout(upperLayout);
     setLayout(mainLayout);
 
     client = c;
+
+    connect(loginAction,SIGNAL(triggered(bool)),this,SLOT(login()));
+    connect(signUpAction,SIGNAL(triggered(bool)),this,SLOT(signUp()));
 }
 
 AppPage::~AppPage()
-{
+{}
 
-}
+class Client;
 
 void AppPage::login()
+{
+    new LoginDialog(this,client->socket,this);
+    connect(client->socket,SIGNAL(readyRead()),this,SLOT(analyzeReply()));
+}
+
+void AppPage::signUp()
 {
 
 }

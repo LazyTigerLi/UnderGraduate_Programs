@@ -29,13 +29,17 @@ SOURCES += \
         appInfoPage.cpp \
         appPage.cpp \
         client.cpp \
-        main.cpp
+        logindialog.cpp \
+        main.cpp \
+        signup.cpp
 
 HEADERS += \
     appHomePage.h \
     appInfoPage.h \
     appPage.h \
-    client.h
+    client.h \
+    logindialog.h \
+    signup.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

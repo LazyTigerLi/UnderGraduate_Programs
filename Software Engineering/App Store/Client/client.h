@@ -3,12 +3,14 @@
 #include "appHomePage.h"
 #include <QHostAddress>
 #include <QTcpSocket>
+
 class Client : public QObject
 {
     Q_OBJECT
 public:
     Client();
     ~Client();
+    QTcpSocket *socket;
 
 private:
     AppHomePage *page;
@@ -16,7 +18,7 @@ private:
 
     QHostAddress serverIp;
     int port = 5678;
-    QTcpSocket *socket;
+
 
 private slots:
     void hasConnected();

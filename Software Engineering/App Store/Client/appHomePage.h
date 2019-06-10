@@ -1,7 +1,6 @@
 #ifndef APPHOMEPAGE_H
 #define APPHOMEPAGE_H
 
-//#include <QScrollArea>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QTcpSocket>
