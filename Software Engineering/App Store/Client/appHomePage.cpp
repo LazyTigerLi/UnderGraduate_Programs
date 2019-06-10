@@ -1,0 +1,111 @@
+#include "appHomePage.h"
+#include "appInfoPage.h"
+#include <QIcon>
+#include <string>
+#include <QDebug>
+
+AppHomePage::AppHomePage(Client *c,QTcpSocket *socket)
+    :AppPage(c)
+{
+    sock = socket;
+    appArea = new QListWidget;
+    appArea->setResizeMode(QListView::Adjust);
+    appArea->setViewMode(QListView::IconMode);
+    appArea->setMovement(QListView::Static);
+    appArea->setSpacing(8);
+
+    mainLayout->addWidget(appArea);
+
+    state = AnalyzeReply;
+    connect(appArea,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(newAppInfoPage(QListWidgetItem*)));
+    connect(sock,SIGNAL(readyRead()),this,SLOT(analyzeReply()));
+    connect(searchButton,SIGNAL(clicked(bool)),this,SLOT(searchApp()));
+    listAppRequest();
+}
+
+AppHomePage::~AppHomePage()
+{}
+
+void AppHomePage::analyzeReply()
+{
+    //qDebug("%d",sock->readAll().size());
+    if(state == AnalyzeReply)
+    {
+        rcvMsg = sock->readAll();
+        //qDebug("%d",rcvMsg.size());
+        if(QString::fromStdString(rcvMsg.mid(0,4).toStdString()) == "list")
+        {
+            state = ListApp;
+            listAppReply();
+        }
+    }
+    else if(state == ListApp)
+        listAppReply();
+}
+
+void AppHomePage::listAppRequest()
+{
+    sock->write("list all");
+}
+
+void AppHomePage::listAppReply()
+{
+    appArea->clear();
+    appID.clear();
+    appName.clear();
+    icon.clear();
+    item.clear();
+    int bytes = 8;
+    while(bytes < rcvMsg.size())
+    {
+        int id = std::stoi(rcvMsg.mid(bytes,8).toStdString()); //ID 4byte
+        //qDebug("%d",id);
+
+        int nameSize = std::stoi(rcvMsg.mid(bytes + 8,2).toStdString(),0,16); //name size 2byte,用16进制表示，所以长度最大为FF，即255
+        //qDebug("%d",nameSize);
+        QString name = QString::fromStdString(rcvMsg.mid(bytes + 10,nameSize).toStdString());   //name
+        //qDebug("%s",name.toStdString().data());
+
+        int iconSize = std::stoi(rcvMsg.mid(bytes + 10 + nameSize,4).toStdString(),0,16);             //icon size 4byte
+        //qDebug("%d",iconSize);
+        QByteArray iconData = rcvMsg.mid(bytes + 14 + nameSize,iconSize);
+
+        QFile newIcon;
+        if(!newIcon.exists(iconPath + id + ".png"))
+        {
+            newIcon.setFileName(iconPath + id + ".png");
+            newIcon.open(QIODevice::WriteOnly);
+            newIcon.write(iconData);  //将图标暂存到本地
+            //使用QDataStream会在文件首部多4个字节，为文件大小
+            newIcon.close();
+        }
+
+        QListWidgetItem *newItem = new QListWidgetItem(QIcon(iconPath + id),name);
+        appArea->addItem(newItem);
+        appID.push_back(id);
+        appName.push_back(name);
+        icon.push_back(iconPath + id + ".png");
+        item.push_back(newItem);
+
+        bytes += 14 + nameSize + iconSize;
+    }
+    state = AnalyzeReply;
+    //如果数据过多，分多次发送的话，这里需要记录已经接收的字节数是否等于数据总量，以决定状态的变化
+}
+
+void AppHomePage::searchApp()
+{
+    QString appName = searchBar->text();
+    if(appName == "")listAppRequest();
+    else sock->write(QString("list" + appName).toUtf8());
+}
+
+void AppHomePage::newAppInfoPage(QListWidgetItem *itemClicked)
+{
+    int i;
+    for(i = 0; i < item.size(); i++)
+        if(item[i] == itemClicked)break;
+    this->hide();
+    AppInfoPage *infoPage = new AppInfoPage(client,this,sock,appID[i],appName[i]);
+    infoPage->show();
+}
