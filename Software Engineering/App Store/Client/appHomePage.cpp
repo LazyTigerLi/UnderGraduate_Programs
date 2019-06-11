@@ -1,13 +1,14 @@
 #include "appHomePage.h"
 #include "appInfoPage.h"
+#include "client.h"
 #include <QIcon>
 #include <string>
 #include <QDebug>
 
-AppHomePage::AppHomePage(Client *c,QTcpSocket *socket)
+AppHomePage::AppHomePage(Client *c)
     :AppPage(c)
-{
-    sock = socket;
+{   
+    sock = c->socket;
     appArea = new QListWidget;
     appArea->setResizeMode(QListView::Adjust);
     appArea->setViewMode(QListView::IconMode);
@@ -105,10 +106,10 @@ void AppHomePage::newAppInfoPage(QListWidgetItem *itemClicked)
     int i;
     for(i = 0; i < item.size(); i++)
         if(item[i] == itemClicked)break;
-    this->hide();
+    //this->hide();
     disconnect(sock,SIGNAL(readyRead()),this,SLOT(analyzeReply()));
     //一定要断开连接，因为主界面并不会删除，当有新的数据到达时，会使得该对象中的槽也进行响应
-
-    AppInfoPage *infoPage = new AppInfoPage(client,this,sock,appID[i],appName[i]);
-    infoPage->show();
+    client->infoPage = new AppInfoPage(client,appID[i],appName[i]);
+    setParent(nullptr);
+    client->setCentralWidget(client->infoPage);
 }

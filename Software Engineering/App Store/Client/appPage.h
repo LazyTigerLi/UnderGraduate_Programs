@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QMainWindow>
 
 class Client;
 
@@ -16,7 +17,7 @@ class AppPage : public QWidget
     Q_OBJECT
 
 public:
-    AppPage(Client *c,QWidget *parent = 0);
+    AppPage(Client *c,QMainWindow *parent = 0);
     ~AppPage();
 
 protected:

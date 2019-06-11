@@ -1,11 +1,14 @@
 #include "appPage.h"
 #include "client.h"
 #include "logindialog.h"
+#include "signupdialog.h"
 #include <QHBoxLayout>
 
-AppPage::AppPage(Client *c, QWidget *parent)
+AppPage::AppPage(Client *c, QMainWindow *parent)
     :QWidget(parent)
 {
+    //setWindowState(Qt::WindowMaximized);
+
     optionsButton = new QToolButton;
     userButton = new QToolButton;
     backButton = new QPushButton;
@@ -56,5 +59,6 @@ void AppPage::login()
 
 void AppPage::signUp()
 {
-
+    new SignUpDialog(this,client->socket,this);
+    connect(client->socket,SIGNAL(readyRead()),this,SLOT(analyzeReply()));
 }

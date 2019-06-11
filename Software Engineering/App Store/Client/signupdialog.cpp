@@ -1,10 +1,10 @@
-#include "logindialog.h"
+#include "signupdialog.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
 
 
-LoginDialog::LoginDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
+SignUpDialog::SignUpDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
     :QDialog(parent)
 {
     sock = socket;
@@ -12,10 +12,13 @@ LoginDialog::LoginDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
 
     userNameLabel = new QLabel(tr("用户名"));
     passwdLabel = new QLabel(tr("密码"));
+    ensurePasswdLabel = new QLabel(tr("确认密码"));
     userNameEdit = new QLineEdit;
     passwdEdit = new QLineEdit;
+    ensurePasswdEdit = new QLineEdit;
     passwdEdit->setEchoMode(QLineEdit::Password);
-    connectButton = new QPushButton(tr("登录"));
+    ensurePasswdEdit->setEchoMode(QLineEdit::Password);
+    connectButton = new QPushButton(tr("注册"));
     cancelButton = new QPushButton(tr("取消"));
 
     QGridLayout *upLayout = new QGridLayout;
@@ -23,6 +26,8 @@ LoginDialog::LoginDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
     upLayout->addWidget(userNameEdit,0,1,1,1);
     upLayout->addWidget(passwdLabel,1,0,1,1);
     upLayout->addWidget(passwdEdit,1,1,1,1);
+    upLayout->addWidget(ensurePasswdLabel,2,0,1,1);
+    upLayout->addWidget(ensurePasswdEdit,2,1,1,1);
 
     QHBoxLayout *downLayout = new QHBoxLayout;
     downLayout->addWidget(connectButton);
@@ -35,19 +40,24 @@ LoginDialog::LoginDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
     setLayout(mainLayout);
     show();
 
-    connect(connectButton,SIGNAL(clicked(bool)),this,SLOT(loginRequest()));
+    connect(connectButton,SIGNAL(clicked(bool)),this,SLOT(signUpRequest()));
     connect(cancelButton,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
     disconnect(sock,SIGNAL(readyRead()),0,0);
-    connect(sock,SIGNAL(readyRead()),this,SLOT(loginReply()));
+    connect(sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
 }
 
-LoginDialog::~LoginDialog()
+SignUpDialog::~SignUpDialog()
 {}
 
-void LoginDialog::loginRequest()
+void SignUpDialog::signUpRequest()
 {
+    if(passwdEdit->text() != ensurePasswdEdit->text())
+    {
+        QMessageBox::information(this, tr("注册失败"),tr("The passwords are inconsistent!"));
+        return;
+    }
     QByteArray dataToSend;
-    QByteArray reqData = QString("login   ").toUtf8();
+    QByteArray reqData = QString("signup  ").toUtf8();
     QByteArray userName = userNameEdit->text().toUtf8();
     QByteArray password = passwdEdit->text().toUtf8();
     QByteArray userNameSize = QString::number(userName.size(),16).toUtf8();
@@ -64,26 +74,26 @@ void LoginDialog::loginRequest()
     sock->write(dataToSend);
 }
 
-void LoginDialog::loginReply()
+void SignUpDialog::signUpReply()
 {
     QByteArray rcvMsg = sock->readAll();
     int bytes = 8;
 
     if(rcvMsg.mid(bytes,1).toStdString().data()[0] == '1')
     {
-        disconnect(sock,SIGNAL(readyRead()),this,SLOT(loginReply()));
+        disconnect(sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
         close();
     }
     else
     {
         int errorSize = std::stoi(rcvMsg.mid(bytes + 1,2).toStdString(),0,16);
         QString error = QString::fromStdString(rcvMsg.mid(bytes + 3,errorSize).toStdString());
-        QMessageBox::information(this, tr("登录失败"),error);
+        QMessageBox::information(this, tr("注册失败"),error);
     }
 }
 
-void LoginDialog::closeDialog()
+void SignUpDialog::closeDialog()
 {
-    disconnect(sock,SIGNAL(readyRead()),this,SLOT(loginReply()));
+    disconnect(sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
     close();
 }

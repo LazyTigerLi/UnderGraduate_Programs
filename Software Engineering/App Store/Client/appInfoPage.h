@@ -11,14 +11,13 @@ class AppInfoPage : public AppPage
     Q_OBJECT
 
 public:
-    AppInfoPage(Client *c,AppHomePage *hp,QTcpSocket *socket,int appID,QString appName);
+    AppInfoPage(Client *c,int appID,QString appName);
     ~AppInfoPage();
 
 private:
     enum State{AnalyzeReply,GetAppInfo,DownLoad};
 
     State state;
-    AppHomePage *homePage;
     QTcpSocket *sock;
     int appID;
     QString appName;

@@ -1,19 +1,22 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 #include "appHomePage.h"
+#include "appInfoPage.h"
 #include <QHostAddress>
 #include <QTcpSocket>
+#include <QMainWindow>
 
-class Client : public QObject
+class Client : public QMainWindow
 {
     Q_OBJECT
 public:
     Client();
     ~Client();
     QTcpSocket *socket;
+    AppHomePage *homePage;
+    AppInfoPage *infoPage;
 
 private:
-    AppHomePage *page;
     bool hasLogin;
 
     QHostAddress serverIp;

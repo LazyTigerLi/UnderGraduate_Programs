@@ -46,6 +46,14 @@ void TcpSocket::analyzeRequest()
         QString password = QString::fromStdString(byteArray.mid(10 + userNameSize,passwordSize).toStdString());
         login(userName,password);
     }
+    else if(QString::fromStdString(byteArray.mid(0,8).toStdString()) == "signup  ")
+    {
+        int userNameSize = std::stoi(byteArray.mid(8,1).toStdString(),0,16);
+        QString userName = QString::fromStdString(byteArray.mid(9,userNameSize).toStdString());
+        int passwordSize = std::stoi(byteArray.mid(9 + userNameSize,1).toStdString(),0,16);
+        QString password = QString::fromStdString(byteArray.mid(10 + userNameSize,passwordSize).toStdString());
+        signUp(userName,password);
+    }
 }
 
 void TcpSocket::listApp()
@@ -188,6 +196,38 @@ void TcpSocket::login(QString userName, QString password)
     {
         success = QByteArray(1,'1');
         dataToSend.append(success);
+        /*query.exec("update `App Store`.`Client` set `Client`.`Is Online` = 1 where "
+                   "`Client`.`ID` = '" + userName + "'");*/
+    }
+    write(dataToSend);
+}
+
+void TcpSocket::signUp(QString userName, QString password)
+{
+    QByteArray dataToSend;
+    QByteArray success;
+    QByteArray errorMsg;
+    QByteArray errorMsgSize;
+    dataToSend.append("login   ");
+    QSqlQuery query;
+    query.exec("select * from `app store`.`Client` where "
+               "`Client`.`ID` = '" + userName + "'");
+    if(query.next())
+    {
+        success = QByteArray(1,'0');
+        QString error = "The username has be used!";
+        errorMsg = error.toUtf8();
+        errorMsgSize = QString::number(errorMsg.size(),16).toUtf8();
+        dataToSend.append(success);
+        dataToSend.append(errorMsgSize);
+        dataToSend.append(errorMsg);
+    }
+    else
+    {
+        success = QByteArray(1,'1');
+        dataToSend.append(success);
+        query.exec("insert into `app store`.`Client`(`Client`.`ID`,`Client`.`Password`,`Client`.`Is Online`)"
+                   " values('" + userName + "','" + password + "',0)");
     }
     write(dataToSend);
 }

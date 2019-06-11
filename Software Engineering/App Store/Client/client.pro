@@ -8,7 +8,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = client
+TARGET = Client
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -31,7 +31,7 @@ SOURCES += \
         client.cpp \
         logindialog.cpp \
         main.cpp \
-        signup.cpp
+        signupdialog.cpp
 
 HEADERS += \
     appHomePage.h \
@@ -39,7 +39,7 @@ HEADERS += \
     appPage.h \
     client.h \
     logindialog.h \
-    signup.h
+    signupdialog.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

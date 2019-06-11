@@ -1,14 +1,14 @@
 #include "appInfoPage.h"
+#include "client.h"
 #include <QPixmap>
 #include <QImage>
 #include <QGridLayout>
 
-AppInfoPage::AppInfoPage(Client *c, AppHomePage *hp,QTcpSocket *socket,int appID, QString appName)
+AppInfoPage::AppInfoPage(Client *c, int appID, QString appName)
     :AppPage(c)
 {
     state = AnalyzeReply;
-    homePage = hp;
-    sock = socket;
+    sock = client->socket;
     this->appID = appID;
     this->appName = appName;
     iconPath = QString("/home/linan/Client/images/") + appID + ".png";
@@ -46,9 +46,11 @@ AppInfoPage::~AppInfoPage()
 
 void AppInfoPage::backToHomePage()
 {
-    homePage->show();
-    connect(sock,SIGNAL(readyRead()),homePage,SLOT(analyzeReply()));
-    this->close();
+    setParent(nullptr);
+    client->setCentralWidget(client->homePage);
+    client->homePage->show();
+    connect(sock,SIGNAL(readyRead()),client->homePage,SLOT(analyzeReply()));
+    close();
 }
 
 void AppInfoPage::analyzeReply()

@@ -15,10 +15,9 @@ class AppHomePage : public AppPage
 {
     Q_OBJECT
 
-
 public:
     QTcpSocket *sock;
-    AppHomePage(Client *c,QTcpSocket *socket);
+    AppHomePage(Client *c);
     ~AppHomePage();
 
 private:
