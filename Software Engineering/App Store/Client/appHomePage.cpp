@@ -12,6 +12,7 @@ AppHomePage::AppHomePage(Client *c)
     appArea->setResizeMode(QListView::Adjust);
     appArea->setViewMode(QListView::IconMode);
     appArea->setMovement(QListView::Static);
+    appArea->setIconSize(QSize(200,200));
     appArea->setSpacing(8);
 
     mainLayout->addWidget(appArea);
@@ -81,6 +82,7 @@ void AppHomePage::listAppReply()
         }
 
         QListWidgetItem *newItem = new QListWidgetItem(QIcon(iconPath + id),name);
+
         appArea->addItem(newItem);
         appID.push_back(id);
         appName.push_back(name);

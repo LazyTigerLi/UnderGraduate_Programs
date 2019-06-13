@@ -28,7 +28,7 @@ void Server::incomingConnection(qintptr descriptor)     //如果是int则不会�
 {
     connect(this,SIGNAL(newMsg(QString)),w,SLOT(update(QString)));
 
-    TcpSocket *newSocket = new TcpSocket(db);
+    TcpSocket *newSocket = new TcpSocket(db,w);
     newSocket->setSocketDescriptor(descriptor);
     sockets.append(newSocket);
 

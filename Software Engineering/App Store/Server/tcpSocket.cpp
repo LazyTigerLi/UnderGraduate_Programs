@@ -2,10 +2,13 @@
 #include <QDateTime>
 #include <string>
 #include <QDebug>
+#include <widget.h>
+#include <QVariant>
 
-TcpSocket::TcpSocket(QSqlDatabase database)
+TcpSocket::TcpSocket(QSqlDatabase database,Widget *w)
 {
     db = database;
+    widget = w;
     state = AnalyzeRequest;
     req.ip = peerAddress();
     connect(this,SIGNAL(readyRead()),this,SLOT(analyzeRequest()));
@@ -281,34 +284,60 @@ void TcpSocket::upload()
     int nameSize = std::stoi(rcvMsg.mid(bytes,2).toStdString(),0,16);
     QString name = QString::fromStdString(rcvMsg.mid(bytes + 2,nameSize).toStdString());
 
-    int appSize = std::stoi(rcvMsg.mid(bytes + 2 + nameSize,8).toStdString(),0,16);
-    fileSize = appSize;
+    int userNameSize = std::stoi(rcvMsg.mid(bytes + 2 + nameSize,1).toStdString(),0,16);
+    QString userName = QString::fromStdString(rcvMsg.mid(bytes + 3 + nameSize,userNameSize).toStdString());
 
-    QByteArray appData = rcvMsg.mid(bytes + 10 + nameSize);
+    int iconSize = std::stoi(rcvMsg.mid(bytes + 3 + nameSize + userNameSize,4).toStdString(),0,16);
+
+    QFile iconFile;
+    if(!iconFile.exists(iconPath + name + "_" + userName))
+    {
+        iconFile.setFileName(iconPath + name + "_" + userName);
+        iconFile.open(QIODevice::WriteOnly);
+        iconFile.write(rcvMsg.mid(bytes + 7 + nameSize + userNameSize,iconSize));
+        iconFile.close();
+    }
+
+    int appSize = std::stoi(rcvMsg.mid(bytes + 7 + nameSize + userNameSize + iconSize,8).toStdString(),0,16);
+    fileSize = appSize;
+    QByteArray appData = rcvMsg.mid(bytes + 15 + nameSize + userNameSize + iconSize);
     rcvSize = appData.size();
 
-    QSqlQuery query;
-    query.exec("select max(`Application`.`App ID`) from `app store`.`Application`");
-    query.next();
-    QString appID = QString::number(query.value(0).toInt());
+    //这里尚未处理当开发者取消上传时控件从vector中的删除
+    appName.push_back(name);
+    QProgressBar *newProgressBar = new QProgressBar;
+    progressBar.push_back(newProgressBar);
+    QPushButton *newPassButton = new QPushButton("pass");
+    passButton.push_back(newPassButton);
+    newPassButton->setChecked(false);
+    connect(newPassButton,SIGNAL(clicked(bool)),this,SLOT(addAppToDB()));
+    newProgressBar->setRange(0,fileSize);
+    newProgressBar->setFormat("Receiving... %p%");
+    developer = userName;
+    widget->addApp(name,newProgressBar,developer,newPassButton);
 
-    appFile = new QFile(appPath + appID);
-    if(!appFile->exists(appPath + appID))
+
+    appFile = new QFile;
+    if(!appFile->exists(appPath + name + "_" + userName))
     {
-        appFile->setFileName(appPath + appID);
+        appFile->setFileName(appPath + name + "_" + userName);
         appFile->open(QIODevice::WriteOnly);
         appFile->write(appData);
+        newProgressBar->setValue(rcvSize);
         //使用QDataStream会在文件首部多4个字节，为文件大小
         if(appSize == rcvSize)
         {
             appFile->close();
             delete appFile;
+            newProgressBar->setFormat("Received %p%");
             state = AnalyzeRequest;
             return;
         }
         else state = Upload;
         return;
     }
+    newProgressBar->setValue(fileSize);
+    newProgressBar->setFormat("Received %p%");
     state = AnalyzeRequest;
 }
 
@@ -325,11 +354,49 @@ void TcpSocket::rcvFile()
     QByteArray appData = rcvMsg;
     appFile->write(appData);
     rcvSize += appData.size();
+    progressBar.last()->setValue(rcvSize);
     if(rcvSize == fileSize)     //所有数据都已接收
     {
         appFile->close();
         delete appFile;
+        progressBar.last()->setFormat("Received %p%");
         state = AnalyzeRequest;
     }
     else state = Upload;
+}
+
+void TcpSocket::addAppToDB()
+{
+    QPushButton *sender = qobject_cast<QPushButton *>(QObject::sender());
+    int i;
+    for(i = 0; i < passButton.size(); i++)
+        if(sender == passButton[i])break;
+
+    QSqlQuery query;
+    query.exec("select max(`Application`.`App ID`) from `app store`.`Application`");
+    query.next();
+    int appID = query.value(0).toInt();
+
+    QString app = appPath + appName[i] + "_" + developer;
+    QString icon = iconPath + appName[i] + "_" + developer;
+    QFile file(app);
+    QFile iconFile(icon);
+    file.open(QIODevice::ReadOnly);
+    iconFile.open(QIODevice::ReadOnly);
+    QVariant iconData(iconFile.readAll());
+    QVariant appData(file.readAll());
+    file.close();
+    iconFile.close();
+
+    query.clear();
+    query.prepare("insert into `app store`.`Application` (`App ID`,`App Name`,`Icon`,`Package`,`Developer ID`)"
+                  " values(?,?,?,?,?)");
+    query.bindValue(0,appID + 1);
+    query.bindValue(1,appName[i]);
+    query.bindValue(2,iconData);
+    query.bindValue(3,appData);
+    query.bindValue(4,developer);
+    query.exec();
+    sender->setDisabled(true);
+    sender->setText("passed");
 }

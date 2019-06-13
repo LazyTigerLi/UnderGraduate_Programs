@@ -9,6 +9,10 @@
 #include <QtSql/QSqlDatabase>
 #include <QSqlQuery>
 #include <QFile>
+#include <QProgressBar>
+#include <QPushButton>
+
+class Widget;
 
 struct Request
 {
@@ -23,7 +27,7 @@ class TcpSocket : public QTcpSocket
 {
     Q_OBJECT
 public:
-    TcpSocket(QSqlDatabase database);
+    TcpSocket(QSqlDatabase database,Widget *w);
     ~TcpSocket();
     Request req;
 
@@ -31,6 +35,7 @@ private:
     enum State{AnalyzeRequest,Upload};
 
     QSqlDatabase db;
+    Widget *widget;
     void listApp();
     void listApp(QString appName);
     void getAppInfo(int appID);
@@ -41,6 +46,7 @@ private:
     void rcvFile();
 
     QString appPath = "/home/linan/Server/app/";
+    QString iconPath = "/home/linan/Server/image/";
     int fileSize;
     int rcvSize;
     QFile *appFile = nullptr;
@@ -48,9 +54,15 @@ private:
     State state;
     QByteArray rcvMsg;
 
+    QVector<QString> appName;
+    QVector<QProgressBar *> progressBar;
+    QString developer;
+    QVector<QPushButton *> passButton;
+
 private slots:
     void clientDisconnectedSlot();
     void analyzeRequest();
+    void addAppToDB();
 
 signals:
     void newMsg(QString);

@@ -5,6 +5,8 @@
 #include <QTextBrowser>
 #include <QTableWidget>
 #include <tuple>
+#include <QProgressBar>
+#include <QPushButton>
 
 class Server;
 
@@ -15,6 +17,7 @@ class Widget : public QWidget
 public:
     Widget(Server *s,QWidget *parent = 0);
     ~Widget();
+    void addApp(QString appName,QProgressBar *progressBar,QString developer,QPushButton *passButton);
 
 private:
     QTextBrowser *connectionInfo;

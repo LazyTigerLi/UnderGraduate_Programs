@@ -16,11 +16,10 @@ AppInfoPage::AppInfoPage(Client *c, int appID, QString appName)
     state = AnalyzeReply;
     this->appID = appID;
     this->appName = appName;
-    iconPath = QString("/home/linan/Client/images/") + appID + ".png";
 
     iconLabel = new QLabel(this);
     QPixmap pixmap;
-    pixmap.convertFromImage(*(new QImage(iconPath)));
+    pixmap.convertFromImage(*(new QImage(iconPath + appID + ".png")));
     iconLabel->setPixmap(pixmap);
 
     nameLabel = new QLabel(appName,this);
@@ -143,6 +142,7 @@ void AppInfoPage::downloadReply()
         {
             appFile->close();
             delete appFile;
+            progressBar->setFormat("Downloaded");
             state = AnalyzeReply;
             return;
         }

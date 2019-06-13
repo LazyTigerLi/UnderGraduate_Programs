@@ -27,7 +27,7 @@ private:
     QVector<int> appID;
     QVector<QString> appName;
     QVector<QString> icon;          //存放的是图标的地址
-    QString iconPath = "/home/linan/Client/images/";
+    QString iconPath = "/home/linan/Client/image/";
     QVector<QListWidgetItem *> item;
     //QScrollArea *appArea;
     void listAppRequest();                 //在主界面列出所有应用

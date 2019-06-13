@@ -22,7 +22,6 @@ private:
     State state;
     int appID;
     QString appName;
-    QString iconPath;
 
     QLabel *iconLabel;
     QLabel *nameLabel;
@@ -40,6 +39,7 @@ private:
     void rcvFile();
 
     QString appPath = "/home/linan/Client/app/";
+    QString iconPath = "/home/linan/Client/image/";
     int fileSize = 0;
     int rcvSize = 0;
     QFile *appFile;
