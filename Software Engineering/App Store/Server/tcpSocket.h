@@ -8,6 +8,7 @@
 #include <QByteArray>
 #include <QtSql/QSqlDatabase>
 #include <QSqlQuery>
+#include <QFile>
 
 struct Request
 {
@@ -27,12 +28,25 @@ public:
     Request req;
 
 private:
+    enum State{AnalyzeRequest,Upload};
+
     QSqlDatabase db;
     void listApp();
     void listApp(QString appName);
     void getAppInfo(int appID);
     void login(QString userName,QString password);
     void signUp(QString userName,QString password);
+    void download(int appID);
+    void upload();
+    void rcvFile();
+
+    QString appPath = "/home/linan/Server/app/";
+    int fileSize;
+    int rcvSize;
+    QFile *appFile = nullptr;
+
+    State state;
+    QByteArray rcvMsg;
 
 private slots:
     void clientDisconnectedSlot();
@@ -41,7 +55,6 @@ private slots:
 signals:
     void newMsg(QString);
     void clientDisconnected(int);
-
 };
 
 #endif // TCPSOCKET_H

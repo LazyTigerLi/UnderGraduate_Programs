@@ -8,7 +8,6 @@
 AppHomePage::AppHomePage(Client *c)
     :AppPage(c)
 {   
-    sock = c->socket;
     appArea = new QListWidget;
     appArea->setResizeMode(QListView::Adjust);
     appArea->setViewMode(QListView::IconMode);
@@ -109,6 +108,12 @@ void AppHomePage::newAppInfoPage(QListWidgetItem *itemClicked)
     //this->hide();
     disconnect(sock,SIGNAL(readyRead()),this,SLOT(analyzeReply()));
     //一定要断开连接，因为主界面并不会删除，当有新的数据到达时，会使得该对象中的槽也进行响应
+
+    if(client->infoPage)
+    {
+        delete client->infoPage;
+        client->infoPage = nullptr;     //删除某个对象不代表其指针值为0
+    }
     client->infoPage = new AppInfoPage(client,appID[i],appName[i]);
     setParent(nullptr);
     client->setCentralWidget(client->infoPage);

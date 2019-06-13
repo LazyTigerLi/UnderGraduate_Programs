@@ -16,7 +16,6 @@ class AppHomePage : public AppPage
     Q_OBJECT
 
 public:
-    QTcpSocket *sock;
     AppHomePage(Client *c);
     ~AppHomePage();
 

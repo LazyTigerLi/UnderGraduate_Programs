@@ -13,12 +13,13 @@ public:
     Client();
     ~Client();
     QTcpSocket *socket;
-    AppHomePage *homePage;
-    AppInfoPage *infoPage;
+    AppHomePage *homePage = nullptr;
+    AppInfoPage *infoPage = nullptr;
+    bool hasLogin = false;
+    QString userName = "";
+    bool isDeveloper = false;
 
 private:
-    bool hasLogin;
-
     QHostAddress serverIp;
     int port = 5678;
 

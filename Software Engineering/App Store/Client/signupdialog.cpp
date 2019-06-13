@@ -1,4 +1,6 @@
 #include "signupdialog.h"
+#include "appPage.h"
+#include "client.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -7,6 +9,7 @@
 SignUpDialog::SignUpDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
     :QDialog(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     sock = socket;
     this->page = page;
 
@@ -47,7 +50,10 @@ SignUpDialog::SignUpDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
 }
 
 SignUpDialog::~SignUpDialog()
-{}
+{
+    connect(page->client->socket,SIGNAL(readyRead()),page,SLOT(analyzeReply()));
+    disconnect(sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
+}
 
 void SignUpDialog::signUpRequest()
 {
@@ -80,10 +86,7 @@ void SignUpDialog::signUpReply()
     int bytes = 8;
 
     if(rcvMsg.mid(bytes,1).toStdString().data()[0] == '1')
-    {
-        disconnect(sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
         close();
-    }
     else
     {
         int errorSize = std::stoi(rcvMsg.mid(bytes + 1,2).toStdString(),0,16);
@@ -94,6 +97,6 @@ void SignUpDialog::signUpReply()
 
 void SignUpDialog::closeDialog()
 {
-    disconnect(sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
+    disconnect(page->sock,SIGNAL(readyRead()),this,SLOT(signUpReply()));
     close();
 }

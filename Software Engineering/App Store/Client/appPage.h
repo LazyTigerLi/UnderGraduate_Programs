@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QMainWindow>
+#include <QTcpSocket>
 
 class Client;
 
@@ -19,6 +20,9 @@ class AppPage : public QWidget
 public:
     AppPage(Client *c,QMainWindow *parent = 0);
     ~AppPage();
+    QAction *loginAction;
+    Client *client;
+    QTcpSocket *sock;
 
 protected:
     QToolButton *optionsButton;
@@ -30,17 +34,14 @@ protected:
     QLineEdit *searchBar;
     QAction *uploadAction;
     QAction *updateAction;
-    QAction *loginAction;
     QAction *signUpAction;
 
     QVBoxLayout *mainLayout;
 
-public:
-    Client *client;
-
 private slots:
     void login();
     void signUp();
+    void upload();
     virtual void analyzeReply() = 0;
 };
 

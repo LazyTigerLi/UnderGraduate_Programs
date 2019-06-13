@@ -2,11 +2,13 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
-
+#include <appPage.h>
+#include <client.h>
 
 LoginDialog::LoginDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
     :QDialog(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     sock = socket;
     this->page = page;
 
@@ -42,7 +44,10 @@ LoginDialog::LoginDialog(AppPage *page, QTcpSocket *socket, QWidget *parent)
 }
 
 LoginDialog::~LoginDialog()
-{}
+{
+    disconnect(page->sock,SIGNAL(readyRead()),this,SLOT(loginReply()));
+    connect(page->sock,SIGNAL(readyRead()),page,SLOT(analyzeReply()));
+}
 
 void LoginDialog::loginRequest()
 {
@@ -71,7 +76,15 @@ void LoginDialog::loginReply()
 
     if(rcvMsg.mid(bytes,1).toStdString().data()[0] == '1')
     {
-        disconnect(sock,SIGNAL(readyRead()),this,SLOT(loginReply()));
+        if(rcvMsg.mid(bytes + 1,1).toStdString().data()[0] == '0')
+            page->client->isDeveloper = false;
+        else page->client->isDeveloper = true;
+        page->client->userName = userNameEdit->text();
+        page->client->hasLogin = true;
+        page->loginAction->setDisabled(true);
+        page->loginAction->setText(page->client->userName);
+        //qDebug("%s",page->client->userName.toStdString().data());
+        //这里也可以把userName和isDeveloper放在AppPage类中作为static成员，不知道哪种方法更好
         close();
     }
     else
