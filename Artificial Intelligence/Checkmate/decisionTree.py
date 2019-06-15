@@ -40,18 +40,6 @@ def chooseBestFeature(dataset,attrLeft):         #这里的数据集是带标签
         #print(ig)
     return which
 
-def preprocess(dataset):            #对数据集进行预处理，这里的dataset是包含标签的
-    for data in dataset:
-        attr0 = data[0]
-        attr1 = data[1]
-        data[0] -= data[2]          #白手国王和白手车的距离
-        data[1] -= data[3]
-        data[2] -= data[4]          #白手车和黑手国王的距离
-        data[3] -= data[5]
-        data[4] = attr0 - data[4]   #白手国王和黑手国王的距离
-        data[5] = attr1 - data[5]
-    return [data[0:6] for data in dataset],[data[-1] for data in dataset]
-
 def pluarityClassification(labels):
     count = {}
     for label in labels:
@@ -105,7 +93,7 @@ def createTree(trainset,trainlabel,testset,testlabel):      #这里的trainset�
         if tempTree == testlabel[i]:
             correct += 1
         result.append(tempTree)
-        print(result[-1])
+        #print(result[-1])
     print(correct / len(testset))
     return result
 
@@ -121,9 +109,9 @@ def readDataset(filename):
                 ord(rawData[2]) - ord('a'),ord(rawData[3]) - ord('1'),\
                 ord(rawData[4]) - ord('a'),ord(rawData[5]) - ord('1'),rawData[6]]
         dataset.append(data)
-    return dataset
+    return [data[0:6] for data in dataset],[data[-1] for data in dataset]
 
 
-(trainset,trainlabel) = preprocess(readDataset("trainset.csv"))
-(testset,testlabel) = preprocess(readDataset("testset.csv"))
+(trainset,trainlabel) = readDataset("trainset.csv")
+(testset,testlabel) = readDataset("testset.csv")
 createTree(trainset,trainlabel,testset,testlabel)
