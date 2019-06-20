@@ -2,7 +2,9 @@
 #include "client.h"
 #include <QPixmap>
 #include <QImage>
+#include <QHBoxLayout>
 #include <QGridLayout>
+#include <QVBoxLayout>
 
 AppInfoPage::AppInfoPage(Client *c, int appID, QString appName)
     :AppPage(c)
@@ -18,12 +20,14 @@ AppInfoPage::AppInfoPage(Client *c, int appID, QString appName)
     this->appName = appName;
 
     iconLabel = new QLabel(this);
+    iconLabel->setFixedSize(200,200);
     QPixmap pixmap;
     pixmap.convertFromImage(*(new QImage(iconPath + appID + ".png")));
-    iconLabel->setPixmap(pixmap);
+    iconLabel->setPixmap(pixmap.scaled(200,200));
 
     nameLabel = new QLabel(appName,this);
     introBrowser = new QTextBrowser(this);
+    introBrowser->setStyleSheet("font-size:20px;color:black");
     downloadButton = new QPushButton("Download");
     progressBar = new QProgressBar(this);
     appFile = new QFile;
@@ -37,12 +41,21 @@ AppInfoPage::AppInfoPage(Client *c, int appID, QString appName)
     }
     else progressBar->hide();
 
-    QGridLayout *midLayout = new QGridLayout;
-    midLayout->addWidget(iconLabel,0,0,3,3);
-    midLayout->addWidget(nameLabel,0,3,1,3);
-    midLayout->addWidget(introBrowser,1,3,2,3);
-    midLayout->addWidget(downloadButton,1,7,1,1);
-    midLayout->addWidget(progressBar,1,7,1,1);
+    QHBoxLayout *midLayout = new QHBoxLayout;
+    midLayout->addWidget(iconLabel);
+    QVBoxLayout *midLayout1 = new QVBoxLayout;
+    nameLabel->setStyleSheet("font-size:40px;color:grey");
+    midLayout1->addWidget(nameLabel);
+    midLayout1->addWidget(introBrowser);
+    QGridLayout *midLayout2 = new QGridLayout;
+    midLayout2->addWidget(downloadButton,0,0,1,1);
+    midLayout2->addWidget(progressBar,0,0,1,1);
+    midLayout->addLayout(midLayout1);
+    midLayout->addStretch();
+    midLayout->addLayout(midLayout2);
+    midLayout->setStretchFactor(iconLabel,2);
+    midLayout->setStretchFactor(midLayout1,4);
+    //midLayout->setStretchFactor(midLayout2,1);
 
     screenshots = new QListWidget(this);
     comments = new QListWidget(this);

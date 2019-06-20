@@ -4,6 +4,7 @@
 #include <QIcon>
 #include <string>
 #include <QDebug>
+#include <QFont>
 
 AppHomePage::AppHomePage(Client *c)
     :AppPage(c)
@@ -82,6 +83,7 @@ void AppHomePage::listAppReply()
         }
 
         QListWidgetItem *newItem = new QListWidgetItem(QIcon(iconPath + id),name);
+        newItem->setFont(QFont("Microsoft YaHei", 12, 50));
 
         appArea->addItem(newItem);
         appID.push_back(id);

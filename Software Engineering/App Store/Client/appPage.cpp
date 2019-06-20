@@ -12,10 +12,16 @@ AppPage::AppPage(Client *c, QMainWindow *parent)
     //setWindowState(Qt::WindowMaximized);
     sock = c->socket;
 
-    optionsButton = new QToolButton;
-    userButton = new QToolButton;
+    optionsButton = new QPushButton;
+    optionsButton->setIcon(QIcon(":/icon/option.jpg"));
+    optionsButton->setStyleSheet("QPushButton::menu-indicator{image:none;}");
+    userButton = new QPushButton;
+    userButton->setIcon(QIcon(":/icon/user.jpg"));
+    userButton->setStyleSheet("QPushButton::menu-indicator{image:none;}");
     backButton = new QPushButton;
+    backButton->setIcon(QIcon(":/icon/back.jpg"));
     searchButton = new QPushButton;
+    searchButton->setText(tr("search"));
 
     options = new QMenu(tr("选项"));
     user = new QMenu(tr("用户"));

@@ -25,8 +25,8 @@ public:
     QTcpSocket *sock;
 
 protected:
-    QToolButton *optionsButton;
-    QToolButton *userButton;
+    QPushButton *optionsButton;
+    QPushButton *userButton;
     QPushButton *backButton;
     QPushButton *searchButton;
     QMenu *options;
