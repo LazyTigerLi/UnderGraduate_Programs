@@ -1,5 +1,6 @@
 import numpy as np
-
+import KMeans
+from matplotlib import pyplot as plt
 
 def PCA(data,threshold):
     #center = np.mean(data,axis = 0)     #对所有样本进行中心化
@@ -11,12 +12,14 @@ def PCA(data,threshold):
     tempSum = 0
     index = np.argsort(eigenValue)
     featureNum = 0
-    for i in reversed(index)
+    for i in reversed(index):
         tempSum += eigenValue[i]
         featureNum += 1
         if tempSum / eigenValueSum >= threshold:
             break
-    w = [featureVector[i] for i in reversed(index[-1 - featureNum:-1])]     #投影矩阵
+    w = np.mat([featureVector[i] for i in reversed(index[-featureNum:])])     #投影矩阵
+    w = w.T
+    return np.dot(data,w)
 
 
 def readDataset(filename):
@@ -31,6 +34,19 @@ def readDataset(filename):
         dataset.append((data,label))
     return np.mat([data[0] for data in dataset]),[data[1] for data in dataset]
 
+def display(dataset):
+    xValues = [data[0] for data in dataset]
+    yValues = [data[1] for data in dataset]
+    plt.scatter(xValues,yValues,s = 2)
+    plt.title('PCA')
+    plt.show()
 
-dataset,label = readDataset("Frogs_MFCCs.csv")
-PCA(dataset,1)
+
+if __name__ == '__main__':
+    dataset,label = readDataset("Frogs_MFCCs.csv")
+    #KMeans.KMeans(4,(dataset.tolist(),label))
+    KMeans.KMeans(4,(newData,label))
+    newData = PCA(dataset,0.6).tolist()
+    print(len(newData[0]))
+    if len(newData[0]) == 2:
+        display(newData)
