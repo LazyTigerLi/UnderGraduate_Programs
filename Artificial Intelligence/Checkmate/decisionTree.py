@@ -1,6 +1,6 @@
 import math
 
-attrValue = (-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7)
+attrValue = (0,1,2,3,4,5,6,7)
 
 def calculateH(dataset):            #计算熵,这里的dataset是包含标签的
     count = {}
@@ -24,7 +24,7 @@ def calculateIG(dataset,k):          #计算信息增益，k表明取第几个�
     for i in range(len(attrValue)):
         childSets.append([])        #注意这里不能用childSets = [[]] * 15的创建方式，因为所有[]实际是同一个对象
     for data in dataset:            #划分数据集
-        childSets[data[k] + 7].append(data)
+        childSets[data[k]].append(data)
     for childSet in childSets:
         IG -= len(childSet) * calculateH(childSet) / length
     return IG
@@ -63,7 +63,7 @@ def create(trainset,trainlabel,attrLeft):        #构造决策树，这里的tra
     for i in range(len(attrValue)):     #划分数据集
         childSets.append([])
     for data in trainset:            
-        childSets[data[feature] + 7].append(data)
+        childSets[data[feature]].append(data)
     for i in range(len(attrValue)):
         if len(childSets[i]) == 0:          #子数据集为空集
             tree[feature][attrValue[i]] = pluarityClassification(trainlabel)
