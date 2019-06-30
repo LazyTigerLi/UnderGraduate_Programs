@@ -519,14 +519,14 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Temporary view structure for view `Month Loan Statics`
+-- Temporary view structure for view `Month Loan Statistics`
 --
 
-DROP TABLE IF EXISTS `Month Loan Statics`;
-/*!50001 DROP VIEW IF EXISTS `Month Loan Statics`*/;
+DROP TABLE IF EXISTS `Month Loan Statistics`;
+/*!50001 DROP VIEW IF EXISTS `Month Loan Statistics`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8mb4;
-/*!50001 CREATE VIEW `Month Loan Statics` AS SELECT 
+/*!50001 CREATE VIEW `Month Loan Statistics` AS SELECT 
  1 AS `time`,
  1 AS `bank`,
  1 AS `money`,
@@ -534,14 +534,14 @@ SET character_set_client = utf8mb4;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary view structure for view `Month Saving Statics`
+-- Temporary view structure for view `Month Saving Statistics`
 --
 
-DROP TABLE IF EXISTS `Month Saving Statics`;
-/*!50001 DROP VIEW IF EXISTS `Month Saving Statics`*/;
+DROP TABLE IF EXISTS `Month Saving Statistics`;
+/*!50001 DROP VIEW IF EXISTS `Month Saving Statistics`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8mb4;
-/*!50001 CREATE VIEW `Month Saving Statics` AS SELECT 
+/*!50001 CREATE VIEW `Month Saving Statistics` AS SELECT 
  1 AS `time`,
  1 AS `bank`,
  1 AS `money`,
@@ -549,14 +549,14 @@ SET character_set_client = utf8mb4;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary view structure for view `Season Loan Statics`
+-- Temporary view structure for view `Year Saving Statistics`
 --
 
-DROP TABLE IF EXISTS `Season Loan Statics`;
-/*!50001 DROP VIEW IF EXISTS `Season Loan Statics`*/;
+DROP TABLE IF EXISTS `Year Saving Statistics`;
+/*!50001 DROP VIEW IF EXISTS `Year Saving Statistics`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8mb4;
-/*!50001 CREATE VIEW `Season Loan Statics` AS SELECT 
+/*!50001 CREATE VIEW `Year Saving Statistics` AS SELECT 
  1 AS `time`,
  1 AS `bank`,
  1 AS `money`,
@@ -564,14 +564,29 @@ SET character_set_client = utf8mb4;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary view structure for view `Season Saving Statics`
+-- Temporary view structure for view `Season Loan Statistics`
 --
 
-DROP TABLE IF EXISTS `Season Saving Statics`;
-/*!50001 DROP VIEW IF EXISTS `Season Saving Statics`*/;
+DROP TABLE IF EXISTS `Season Loan Statistics`;
+/*!50001 DROP VIEW IF EXISTS `Season Loan Statistics`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8mb4;
-/*!50001 CREATE VIEW `Season Saving Statics` AS SELECT 
+/*!50001 CREATE VIEW `Season Loan Statistics` AS SELECT 
+ 1 AS `time`,
+ 1 AS `bank`,
+ 1 AS `money`,
+ 1 AS `count`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `Season Saving Statistics`
+--
+
+DROP TABLE IF EXISTS `Season Saving Statistics`;
+/*!50001 DROP VIEW IF EXISTS `Season Saving Statistics`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `Season Saving Statistics` AS SELECT 
  1 AS `time`,
  1 AS `bank`,
  1 AS `money`,
@@ -602,14 +617,14 @@ CREATE TABLE `Staff` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Temporary view structure for view `Year Loan Statics`
+-- Temporary view structure for view `Year Loan Statistics`
 --
 
-DROP TABLE IF EXISTS `Year Loan Statics`;
-/*!50001 DROP VIEW IF EXISTS `Year Loan Statics`*/;
+DROP TABLE IF EXISTS `Year Loan Statistics`;
+/*!50001 DROP VIEW IF EXISTS `Year Loan Statistics`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8mb4;
-/*!50001 CREATE VIEW `Year Loan Statics` AS SELECT 
+/*!50001 CREATE VIEW `Year Loan Statistics` AS SELECT 
  1 AS `time`,
  1 AS `bank`,
  1 AS `money`,
@@ -621,10 +636,10 @@ SET character_set_client = @saved_cs_client;
 --
 
 --
--- Final view structure for view `Month Loan Statics`
+-- Final view structure for view `Month Loan Statistics`
 --
 
-/*!50001 DROP VIEW IF EXISTS `Month Loan Statics`*/;
+/*!50001 DROP VIEW IF EXISTS `Month Loan Statistics`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -633,16 +648,16 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `Month Loan Statics` AS select date_format(floor(`LoanDistribution`.`Date`),'%Y-%M-01 00:00:00') AS `time`,`Loan`.`Bank` AS `bank`,sum(`LoanDistribution`.`Money`) AS `money`,count(distinct `Client_has_Loan`.`ID`) AS `count` from ((`Client_has_Loan` join `LoanDistribution`) join `Loan`) where ((`Client_has_Loan`.`Loan ID` = `LoanDistribution`.`Loan ID`) and (`Client_has_Loan`.`Loan ID` = `Loan`.`Loan ID`)) group by `time`,`Loan`.`Bank` order by `time` desc */;
+/*!50001 VIEW `Month Loan Statistics` AS select date_format(floor(`LoanDistribution`.`Date`),'%Y-%M-01 00:00:00') AS `time`,`Loan`.`Bank` AS `bank`,sum(`LoanDistribution`.`Money`) AS `money`,count(distinct `Client_has_Loan`.`ID`) AS `count` from ((`Client_has_Loan` join `LoanDistribution`) join `Loan`) where ((`Client_has_Loan`.`Loan ID` = `LoanDistribution`.`Loan ID`) and (`Client_has_Loan`.`Loan ID` = `Loan`.`Loan ID`)) group by `time`,`Loan`.`Bank` order by `time` desc */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `Month Saving Statics`
+-- Final view structure for view `Month Saving Statistics`
 --
 
-/*!50001 DROP VIEW IF EXISTS `Month Saving Statics`*/;
+/*!50001 DROP VIEW IF EXISTS `Month Saving Statistics`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -651,16 +666,35 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `Month Saving Statics` AS select date_format(floor(`Account Change Log`.`Date`),'%Y-%M-01 00:00:00') AS `time`,`Account`.`Bank` AS `bank`,sum(`Account Change Log`.`Money`) AS `money`,count(distinct `Account Change Log`.`Client ID`) AS `count` from (`Account Change Log` join `Account`) where (`Account Change Log`.`Account ID` = `Account`.`Account ID`) group by `time`,`Account`.`Bank` order by `time` desc */;
+/*!50001 VIEW `Month Saving Statistics` AS select date_format(floor(`Account Change Log`.`Date`),'%Y-%M-01 00:00:00') AS `time`,`Account`.`Bank` AS `bank`,sum(`Account Change Log`.`Money`) AS `money`,count(distinct `Account Change Log`.`Client ID`) AS `count` from (`Account Change Log` join `Account`) where (`Account Change Log`.`Account ID` = `Account`.`Account ID`) group by `time`,`Account`.`Bank` order by `time` desc */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+
+--
+-- Final view structure for view `Year Saving Statistics`
+--
+
+/*!50001 DROP VIEW IF EXISTS `Year Saving Statistics`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `Year Saving Statistics` AS select date_format(floor(`Account Change Log`.`Date`),'%Y-01-01 00:00:00') AS `time`,`Account`.`Bank` AS `bank`,sum(`Account Change Log`.`Money`) AS `money`,count(distinct `Account Change Log`.`Client ID`) AS `count` from (`Account Change Log` join `Account`) where (`Account Change Log`.`Account ID` = `Account`.`Account ID`) group by `time`,`Account`.`Bank` order by `time` desc */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `Season Loan Statics`
+-- Final view structure for view `Season Loan Statistics`
 --
 
-/*!50001 DROP VIEW IF EXISTS `Season Loan Statics`*/;
+/*!50001 DROP VIEW IF EXISTS `Season Loan Statistics`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -669,16 +703,16 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `Season Loan Statics` AS select concat(year(`LoanDistribution`.`Date`),' ',quarter(`LoanDistribution`.`Date`)) AS `time`,`Loan`.`Bank` AS `bank`,sum(`LoanDistribution`.`Money`) AS `money`,count(distinct `Client_has_Loan`.`ID`) AS `count` from ((`Client_has_Loan` join `LoanDistribution`) join `Loan`) where ((`Client_has_Loan`.`Loan ID` = `LoanDistribution`.`Loan ID`) and (`Client_has_Loan`.`Loan ID` = `Loan`.`Loan ID`)) group by `time`,`Loan`.`Bank` order by `time` desc */;
+/*!50001 VIEW `Season Loan Statistics` AS select concat(year(`LoanDistribution`.`Date`),' ',quarter(`LoanDistribution`.`Date`)) AS `time`,`Loan`.`Bank` AS `bank`,sum(`LoanDistribution`.`Money`) AS `money`,count(distinct `Client_has_Loan`.`ID`) AS `count` from ((`Client_has_Loan` join `LoanDistribution`) join `Loan`) where ((`Client_has_Loan`.`Loan ID` = `LoanDistribution`.`Loan ID`) and (`Client_has_Loan`.`Loan ID` = `Loan`.`Loan ID`)) group by `time`,`Loan`.`Bank` order by `time` desc */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `Season Saving Statics`
+-- Final view structure for view `Season Saving Statistics`
 --
 
-/*!50001 DROP VIEW IF EXISTS `Season Saving Statics`*/;
+/*!50001 DROP VIEW IF EXISTS `Season Saving Statistics`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -687,16 +721,16 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `Season Saving Statics` AS select concat(year(`Account Change Log`.`Date`),' ',quarter(`Account Change Log`.`Date`)) AS `time`,`Account`.`Bank` AS `bank`,sum(`Account Change Log`.`Money`) AS `money`,count(distinct `Account Change Log`.`Client ID`) AS `count` from (`Account Change Log` join `Account`) where (`Account Change Log`.`Account ID` = `Account`.`Account ID`) group by `time`,`Account`.`Bank` order by `time` desc */;
+/*!50001 VIEW `Season Saving Statistics` AS select concat(year(`Account Change Log`.`Date`),' ',quarter(`Account Change Log`.`Date`)) AS `time`,`Account`.`Bank` AS `bank`,sum(`Account Change Log`.`Money`) AS `money`,count(distinct `Account Change Log`.`Client ID`) AS `count` from (`Account Change Log` join `Account`) where (`Account Change Log`.`Account ID` = `Account`.`Account ID`) group by `time`,`Account`.`Bank` order by `time` desc */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `Year Loan Statics`
+-- Final view structure for view `Year Loan Statistics`
 --
 
-/*!50001 DROP VIEW IF EXISTS `Year Loan Statics`*/;
+/*!50001 DROP VIEW IF EXISTS `Year Loan Statistics`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -705,7 +739,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `Year Loan Statics` AS select date_format(floor(`LoanDistribution`.`Date`),'%Y-01-01 00:00:00') AS `time`,`Loan`.`Bank` AS `bank`,sum(`LoanDistribution`.`Money`) AS `money`,count(distinct `Client_has_Loan`.`ID`) AS `count` from ((`Client_has_Loan` join `LoanDistribution`) join `Loan`) where ((`Client_has_Loan`.`Loan ID` = `LoanDistribution`.`Loan ID`) and (`Client_has_Loan`.`Loan ID` = `Loan`.`Loan ID`)) group by `time`,`Loan`.`Bank` order by `time` desc */;
+/*!50001 VIEW `Year Loan Statistics` AS select date_format(floor(`LoanDistribution`.`Date`),'%Y-01-01 00:00:00') AS `time`,`Loan`.`Bank` AS `bank`,sum(`LoanDistribution`.`Money`) AS `money`,count(distinct `Client_has_Loan`.`ID`) AS `count` from ((`Client_has_Loan` join `LoanDistribution`) join `Loan`) where ((`Client_has_Loan`.`Loan ID` = `LoanDistribution`.`Loan ID`) and (`Client_has_Loan`.`Loan ID` = `Loan`.`Loan ID`)) group by `time`,`Loan`.`Bank` order by `time` desc */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
