@@ -1,23 +1,21 @@
 from cvxopt import matrix,solvers
 import numpy as np
-import gc
 
 def calculateK(dataset,sigma):            #dataset每一行为一条数据，numpy矩阵
     if sigma == 0:
-        return dataset.dot(dataset.T)
+        np.savetxt("kernel_"+str(sigma),dataset.dot(dataset.T), fmt="%d", delimiter=",")
+        return
     else:
-        k = np.zeros((len(dataset),len(dataset)),'float16')
+        k = np.zeros((len(dataset),len(dataset)),'float32')
         for i in range(len(dataset)):
             print(i)
             k[i] = (np.linalg.norm(dataset - dataset[i],axis = 1))
         k = -(k / sigma)**2
         k = np.exp(k)
-        gc.collect()
-        return k.T
+        np.savetxt("kernel_"+str(sigma),k.T, fmt="%f", delimiter=",")
 
-
-def softSVM(trainset,trainlabel,sigma,C):       #trainLabel经过处理，为1和-1
-    n = len(trainlabel)
+#def softSVM(trainset,trainlabel,sigma,C):       #trainLabel经过处理，为1和-1
+#    n = len(trainlabel)
     '''P = np.zeros((n,n))
     for i in range(n):
         for j in range(n):
@@ -35,6 +33,7 @@ def softSVM(trainset,trainlabel,sigma,C):       #trainLabel经过处理，为1�
 
     solution = solvers.qp(P,q,G,h,A,b)
     print(solution['x'])'''
+    '''
     k = calculateK(trainset,sigma)
     y1 = np.mat(trainlabel,'bool_')
     y = y1.T
@@ -64,7 +63,7 @@ def multiClassSVM(trainset,trainlabel,testset,testlabel):
                 processedLabel.append(-1)
         softSVM(trainset,processedLabel,0,1)
         break
-
+'''
 
 def readDataset(filename):
     dataset = []
@@ -79,7 +78,8 @@ def readDataset(filename):
         dataset.append(data)
     return np.mat([data[0:6] for data in dataset]),[data[-1] for data in dataset]
 
-
 (trainset,trainlabel) = readDataset("trainset.csv")
-(testset,testlabel) = readDataset("testset.csv")
-multiClassSVM(trainset,trainlabel,testset,testlabel)
+calculateK(trainset,0)
+calculateK(trainset,1)
+calculateK(trainset,10)
+calculateK(trainset,0.1 )

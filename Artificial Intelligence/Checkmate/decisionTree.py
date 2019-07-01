@@ -1,4 +1,5 @@
 import math
+import plotTree
 
 label2Index = {}
 classifications = []
@@ -130,7 +131,7 @@ def createTree(trainset,trainlabel,testset,testlabel):      #这里的trainset�
         result.append(tempTree)
         #print(result[-1])
     print(evaluate(result,testlabel))
-    return result
+    return tree
 
 
 def readDataset(filename):
@@ -153,6 +154,9 @@ def readDataset(filename):
     return [data[0:6] for data in dataset],[data[-1] for data in dataset]
 
 
-(trainset,trainlabel) = readDataset("trainset.csv")
-(testset,testlabel) = readDataset("testset.csv")
-createTree(trainset,trainlabel,testset,testlabel)
+if __name__ == '__main__':
+    (trainset,trainlabel) = readDataset("trainset.csv")
+    (testset,testlabel) = readDataset("testset.csv")
+    tree = createTree(trainset,trainlabel,testset,testlabel)
+    print(tree)
+    #plotTree.createPlot(tree)
