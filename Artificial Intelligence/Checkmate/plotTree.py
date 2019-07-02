@@ -1,18 +1,16 @@
 import matplotlib.pyplot as plt  
 
 
-decisionNode = dict(boxstyle="round4", color='#3366FF')  #定义判断结点形态
-leafNode = dict(boxstyle="circle", color='#FF6633')         #定义叶结点形态
-arrow_args = dict(arrowstyle="<-", color='g')            #定义箭头
+decisionNode = dict(boxstyle="round4", color='#3366FF')
+leafNode = dict(boxstyle="circle", color='#FF6633')
+arrow_args = dict(arrowstyle="<-", color='g')
 
-#绘制带箭头的注释
 def plotNode(nodeTxt, centerPt, parentPt, nodeType):
     createPlot.ax1.annotate(nodeTxt, xy=parentPt, xycoords='axes fraction',
                             xytext=centerPt, textcoords='axes fraction',
                             va="center", ha="center", bbox=nodeType, arrowprops=arrow_args)
 
 
-#计算叶结点数
 def getNumLeafs(myTree):
     numLeafs = 0
     firstStr = list(myTree.keys())[0]
@@ -25,7 +23,6 @@ def getNumLeafs(myTree):
     return numLeafs
 
 
-#计算树的层数
 def getTreeDepth(myTree):
     maxDepth = 0
     firstStr = list(myTree.keys())[0]
@@ -40,7 +37,6 @@ def getTreeDepth(myTree):
     return maxDepth
 
 
-#在父子结点间填充文本信息
 def plotMidText(cntrPt, parentPt, txtString):
     xMid = (parentPt[0] - cntrPt[0]) / 2.0 + cntrPt[0]
     yMid = (parentPt[1] - cntrPt[1]) / 2.0 + cntrPt[1]
@@ -52,8 +48,8 @@ def plotTree(myTree, parentPt, nodeTxt):
     depth = getTreeDepth(myTree)
     firstStr = list(myTree.keys())[0]
     cntrPt = (plotTree.xOff + (1.0 + float(numLeafs)) / 2.0 / plotTree.totalW, plotTree.yOff)
-    plotMidText(cntrPt, parentPt, nodeTxt)  #在父子结点间填充文本信息
-    plotNode(firstStr, cntrPt, parentPt, decisionNode)  #绘制带箭头的注释
+    plotMidText(cntrPt, parentPt, nodeTxt)
+    plotNode(firstStr, cntrPt, parentPt, decisionNode)
     secondDict = myTree[firstStr]
     plotTree.yOff = plotTree.yOff - 1.0 / plotTree.totalD
     for key in secondDict.keys():

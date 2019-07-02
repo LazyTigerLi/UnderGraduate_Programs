@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 label2Index = {}
 classifications = []
@@ -53,6 +54,8 @@ def evaluate(label,realLabel):
 
 def knn(trainset,trainlabel,testset,testlabel,k):
     result = []
+    trainset = np.array(trainset)
+    testset = np.array(testset)
     for i in range(len(testset)):
         distance = np.linalg.norm(trainset - testset[i],axis = 1)
         k_nearest_neighbors = np.argsort(distance)[0:k]
@@ -78,9 +81,41 @@ def readDataset(filename):
             index += 1
         data.append(label2Index[rawData[6]])
         dataset.append(data)
-    return np.mat([data[0:6] for data in dataset]),[data[-1] for data in dataset]
+    return [data[0:6] for data in dataset],[data[-1] for data in dataset]
+
+
+def crossValidation(trainset,trainlabel):
+    newData = []
+    
+    data = {}
+    size = len(trainset)
+    for i in range(size):
+        if trainlabel[i] in data:
+            data[trainlabel[i]].append(i)
+        else:
+            data[trainlabel[i]] = []
+    for i in range(5):
+        newData.append([])
+        for label in data:
+            length = len(data[label])
+            newData[i].extend(data[label][i * length // 5: (i + 1) * length // 5])
+
+    for i in range(5):
+        data = []
+        label = []
+        testdata = []
+        testlabel = []
+        for j in range(5):
+            if j == i:
+                testdata = [trainset[k] for k in newData[j]]
+                testlabel = [trainlabel[k] for k in newData[j]]
+            else:
+                data.extend([trainset[k] for k in newData[j]])
+                label.extend([trainlabel[k] for k in newData[j]])
+        knn(data,label,testdata,testlabel,10)    
 
 if __name__ == '__main__':
     (trainset,trainlabel) = readDataset("trainset.csv")
     (testset,testlabel) = readDataset("testset.csv")
-    knn(trainset,trainlabel,testset,testlabel,7)
+    crossValidation(trainset,trainlabel)
+    #knn(trainset,trainlabel,testset,testlabel,10)

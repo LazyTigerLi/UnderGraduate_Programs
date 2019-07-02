@@ -101,7 +101,7 @@ def multiClassSVM(trainset,trainlabel,testset,testlabel):
             else:
                 processedLabel.append(-1.0)
         #print(processedLabel)
-        wb.append(softSVM(trainset,processedLabel,10,2))
+        wb.append(softSVM(trainset,processedLabel,10,10))
     #print(wb)
     #print("finished")
     result = []
@@ -111,7 +111,7 @@ def multiClassSVM(trainset,trainlabel,testset,testlabel):
             v.append(np.dot(data,arg[0]) + arg[1])
         #print(v)
         result.append(np.argmax(np.array(v)))
-    print(result)
+    #print(result)
     print(evaluate(result,testlabel))
 
 

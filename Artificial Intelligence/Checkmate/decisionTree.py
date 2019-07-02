@@ -155,9 +155,21 @@ def readDataset(filename):
     return [data[0:6] for data in dataset],[data[-1] for data in dataset]
 
 
+def cutTree(tree,depth):
+    newTree = {}
+    if(depth == 4):
+        return "more"
+    if not isinstance(tree,dict):
+        return tree
+    for node in tree:
+        newTree[node] = cutTree(tree[node],depth + 1)
+    return newTree
+
+
 if __name__ == '__main__':
     (trainset,trainlabel) = readDataset("trainset.csv")
     (testset,testlabel) = readDataset("testset.csv")
     tree = createTree(trainset,trainlabel,testset,testlabel)
     #print(tree)
-    #plotTree.createPlot(tree)
+    #print(cutTree(tree,0))
+    plotTree.createPlot(cutTree(tree,0))
