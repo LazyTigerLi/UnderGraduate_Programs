@@ -44,9 +44,9 @@ def display(dataset):
 
 if __name__ == '__main__':
     dataset,label = readDataset("Frogs_MFCCs.csv")
-    #KMeans.KMeans(4,(dataset.tolist(),label))
-    KMeans.KMeans(4,(newData,label))
-    newData = PCA(dataset,0.6).tolist()
+    #KMeans.KMeans(7,(dataset.tolist(),label))
+    newData = PCA(dataset,0.8).tolist()
+    KMeans.KMeans(7,(newData,label))
     print(len(newData[0]))
-    if len(newData[0]) == 2:
+    if len(newData[0]) >= 2:
         display(newData)

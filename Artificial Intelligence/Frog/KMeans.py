@@ -28,17 +28,28 @@ def evaluate(N,realClusters,clusters):
             for k in range(i + 1,len(intersect)):
                 s += intersect[k][j]
             b += s * intersect[i][j]
-    d = N * (N - 1) / 2
+    d = N * (N - 1) / 2 - a - b - c
     rand = (a + d) / (a + b + c + d)
     print((a,b,c,d))
     return (purity / N,rand)
+
+def writeResults(clusters,size):
+    result = open("result.csv",'w')
+    for i in range(size):
+        for j in range(len(clusters)):
+            if i in clusters[j]:
+                result.write(str(j))
+                result.write('\n')
+                break
+    result.close()
 
 
 def KMeans(k,data):                 #data包括数据和分组
     dataset = data[0]
     realLabel = data[1]
     length = len(dataset)
-    index = random.sample(range(0,length),k)
+    index = random.sample(range(length),k)
+    #index = list(range(k))
     centralPoints = np.mat([dataset[i] for i in index])
     clusters = []                   #KMeans算法得到的分组
     
@@ -69,6 +80,7 @@ def KMeans(k,data):                 #data包括数据和分组
             for i in range(k):
                 clusterData = np.mat([dataset[j] for j in clusters[i]])
                 centralPoints[i] = np.mean(clusterData,axis = 0)
+    writeResults(clusters,length)
     print(evaluate(length,realClusters,clusters))
 
 
@@ -87,4 +99,4 @@ def readDataset(filename):
 
 if __name__ == '__main__':
     dataset,label = readDataset("Frogs_MFCCs.csv")
-    KMeans(4,(dataset,label))
+    KMeans(7,(dataset,label))

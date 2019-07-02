@@ -87,6 +87,7 @@ def pluarityClassification(labels):
             count[label] += 1
         else:
             count[label] = 1
+    #return max(count,key = lambda x: count[x])
     return max(zip(count.values(),count.keys()))[1]
 
 def create(trainset,trainlabel,attrLeft):        #构造决策树，这里的trainset包含trainlabel
@@ -158,5 +159,5 @@ if __name__ == '__main__':
     (trainset,trainlabel) = readDataset("trainset.csv")
     (testset,testlabel) = readDataset("testset.csv")
     tree = createTree(trainset,trainlabel,testset,testlabel)
-    print(tree)
+    #print(tree)
     #plotTree.createPlot(tree)

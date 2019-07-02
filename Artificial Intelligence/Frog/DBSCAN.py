@@ -70,14 +70,14 @@ def DBSCAN(data,eps,minPts):
     N = []
     clusters = []
     for i in range(size):
-        print(i)
+        #print(i)
         N.append(neighborhood(np.mat(dataset),np.mat(dataset[i]),eps))
         if len(N[i]) >= minPts:
             core.add(i)
     numOfClusters = 0
     unvisited = set(range(size))
     while len(core) != 0:
-        print(len(core))
+        #print(len(core))
         unvisitedOld = unvisited.copy()
         q = []
         coreObject = core.pop()
